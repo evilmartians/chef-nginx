@@ -31,7 +31,7 @@ action :create do
       action :create
       owner "root"
       group "root"
-      cookbook new_resource.cookbook_name
+      cookbook new_resource.cookbook_name.to_s
       source new_resource.template
       variables new_resource.variables
       notifies :reload, resources(:service => "nginx"), :delayed
