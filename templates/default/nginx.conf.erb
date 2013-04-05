@@ -1,23 +1,34 @@
 # This file is generated and managed by Chef. It will be overwritten on the
 # next chef_run. Please, be careful!
 
-user <%= node['nginx']['user'] %>;
-worker_processes  <%= node['nginx']['worker_processes'] %>;
-<% if node['nginx']['daemon_disable'] -%>
-daemon off;
+<% %w{daemon debug_points error_log lock_file master_process pcre_jit pid ssl_engine timer_resolution user worker_cpu_affinity worker_priority worker_processes worker_rlimit_core worker_rlimit_nofile worker_rlimit_sigpending working_directory}.each do |opt| -%>
+<% if @options.has_key?(opt) -%>
+<%= "#{opt} #{@options[opt]};" %>
+<% end -%> 
+<% end -%>
+<% if @options.has_key?('env') and @options['env'].is_a?(Array) -%>
+
+<% @options['env'].each do |env_var| -%>
+env <%= env_var %>;
+<% end -%>
 <% end -%>
 
-error_log  <%= node['nginx']['directories']['log_dir'] %>/error.log;
-pid        /var/run/nginx.pid;
-
 events {
-  worker_connections  <%= node['nginx']['worker_connections'] %>;
+  <% %w{accept_mutex accept_mutex_delay multi_accept use worker_aio_requests worker_connections}.each do |opt| -%>
+  <% if @options.has_key?(opt) -%>
+  <%= "#{opt} #{@options[opt]};" %>
+  <% end -%> 
+  <% end -%>
+  <% if @options.has_key?('debug_connection') and @options['debug_connection'].is_a?(Array) -%>
+
+  <% @options['debug_connection'].each do |connection| -%>
+  debug_connection <%= connection %>;
+  <% end -%>
+  <% end -%>
 }
 
-worker_rlimit_nofile <%= node['nginx']['worker_rlimit_nofile'] %>;
-
 http {
-  include       <%= node['nginx']['directories']['conf_dir'] %>/mime.types;
+  include       <%= @options['conf_dir'] %>/mime.types;
   default_type  application/octet-stream;
 
   log_format detailed '$remote_addr - $remote_user [$time_local] $host '
@@ -26,31 +37,14 @@ http {
                         '$pid $connection $request_time $msec '
                         '$upstream_status $upstream_response_time';
 
-  access_log	<%= node['nginx']['directories']['log_dir'] %>/access.log detailed;
+  access_log	<%= @options['log_dir'] %>/access.log detailed;
 
-  sendfile on;
-  tcp_nopush on;
-  tcp_nodelay on;
-  server_tokens off;
-  reset_timedout_connection <%= node['nginx']['reset_timedout_connection'] %>;
+  <% %w{server_names_hash_bucket_size server_names_hash_max_size types_hash_bucket_size variables_hash_bucket_size variables_hash_max_size }.each do |opt| -%>
+  <% if @options.has_key?(opt) -%>
+  <%= "#{opt} #{@options[opt]};" %>
+  <% end -%>
+  <% end -%>
 
-  <% if node['nginx']['keepalive'] == "on" %>
-  keepalive_timeout  <%= node['nginx']['keepalive_timeout'] %>;
-  <% end %>
-
-  gzip  <%= node['nginx']['gzip']['enable'] %>;
-  <% if node['nginx']['gzip']['enable'] == "on" %>
-  gzip_http_version <%= node['nginx']['gzip']['gzip_http_version'] %>;
-  gzip_comp_level <%= node['nginx']['gzip']['gzip_comp_level'] %>;
-  gzip_proxied <%= node['nginx']['gzip']['gzip_proxied'] %>;
-  gzip_types <%= node['nginx']['gzip']['gzip_types'].join(' ') %>;
-  gzip_disable <%= node['nginx']['gzip']['gzip_disable'] %>;
-  gzip_vary <%= node['nginx']['gzip']['gzip_vary'] %>;
-  <% end %>
-
-  server_names_hash_bucket_size <%= node['nginx']['server_names_hash_bucket_size'] %>;
-  types_hash_bucket_size <%= node['nginx']['types_hash_bucket_size'] %>;
-
-  include <%= node['nginx']['directories']['conf_dir'] %>/conf.d/*.conf;
-  include <%= node['nginx']['directories']['conf_dir'] %>/sites-enabled/*;
+  include <%= @options['conf_dir'] %>/conf.d/*.conf;
+  include <%= @options['conf_dir'] %>/sites-enabled/*;
 }

@@ -20,70 +20,98 @@
 # limitations under the License.
 #
 
-package "nginx"
 
-directory node['nginx']['directories']['log_dir'] do
-  mode 0755
-  owner node['nginx']['user']
-  action :create
-end
+begin
+  this_recipe_resource_collection = run_context.resource_collection.all_resources.select do |res|
+    res.cookbook_name == cookbook_name and res.recipe_name == "default"
+  end
 
-%w{nxensite nxdissite}.each do |nxscript|
-  template "/usr/sbin/#{nxscript}" do
-    source "#{nxscript}.erb"
+  Chef::Log.debug("Resources found inside recipe[#{cookbook_name}::#{recipe_name}]: #{this_recipe_resource_collection.length}")
+  raise Chef::Exceptions::ResourceNotFound if this_recipe_resource_collection.length == 0
+rescue Chef::Exceptions::ResourceNotFound => e
+  package "nginx"
+
+  directory node['nginx']['directories']['log_dir'] do
     mode 0755
+    owner node['nginx']['user']
+    action :create
+  end
+
+  %w{nxensite nxdissite}.each do |nxscript|
+    template "/usr/sbin/#{nxscript}" do
+      source "#{nxscript}.erb"
+      mode 0755
+      owner "root"
+      group "root"
+    end
+  end
+
+  %w{sites-available sites-enabled conf.d}.each do |dir|
+    directory dir do
+      path "#{node['nginx']['directories']['conf_dir']}/#{dir}/"
+      owner "root"
+      group "root"
+      mode 0755
+    end
+  end
+
+  directory "/var/www/" do
+    path "/var/www/"
     owner "root"
     group "root"
-  end
-end
-
-%w{sites-available sites-enabled conf.d}.each do |dir|
-  directory dir do
-    path "#{node['nginx']['directories']['conf_dir']}/#{dir}/"
-    owner "root"
-    group "root"
     mode 0755
   end
-end
 
-directory "/var/www/" do
-  path "/var/www/"
-  owner "root"
-  group "root"
-  mode 0755
-end
+  cookbook_file "/var/www/index.html" do
+    action :create_if_missing
+    source "welcome-to-nginx.html"
+  end
 
-cookbook_file "/var/www/index.html" do
-  action :create_if_missing
-  source "welcome-to-nginx.html"
-end
+  service "nginx" do
+    supports :status => true, :restart => true, :reload => true
+    action [ :enable, :start ]
+  end
 
-nginx_mainconfig "nginx.conf.erb"
+  template "Nginx main configuration file" do
+    path "#{node['nginx']['directories']['conf_dir']}/nginx.conf"
+    source 'nginx.conf.erb'
+    action :create
+    owner "root"
+    group "root"
+    variables(
+      :options => Mash.new({
+        'user'                 => node['nginx']['user'],
+        'worker_processes'     => node['nginx']['worker_processes'],
+        'error_log'            => ::File.join(node['nginx']['directories']['log_dir'], "error.log"),
+        'pid'                  => '/var/run/nginx.pid',
+        'conf_dir'             => node['nginx']['directories']['conf_dir'],
+        'worker_connections'   => node['nginx']['worker_connections'],
+        'worker_rlimit_nofile' => node['nginx']['worker_rlimit_nofile']
+      })
+    )
+    notifies :reload, resources(:service => "nginx"), :delayed
+  end
 
-nginx_logrotate_template "nginx" do
-  logs "#{node['nginx']['directories']['log_dir']}/*.log"
-  how_often "daily"
-  rotate 7
-  copytruncate false
-  user "root"
-  group "adm"
-  mode "640"
-  pidfile "/var/run/nginx.pid"
-end
+  cookbook_file "#{node['nginx']['directories']['conf_dir']}/mime.types" do
+    owner "root"
+    group "root"
+    mode 0644
+    source "mime.types"
+    notifies :reload, resources(:service => "nginx"), :delayed
+  end
 
-service "nginx" do
-  supports :status => true, :restart => true, :reload => true
-  action [ :enable, :start ]
-end
+  nginx_cleanup "#{node['nginx']['directories']['conf_dir']}/sites-enabled/" do
+    notifies :reload, resources(:service => "nginx"), :delayed
+  end
 
-cookbook_file "#{node['nginx']['directories']['conf_dir']}/mime.types" do
-  owner "root"
-  group "root"
-  mode 0644
-  source "mime.types"
-  notifies :reload, resources(:service => "nginx"), :delayed
-end
-
-nginx_cleanup "#{node['nginx']['directories']['conf_dir']}/sites-enabled/" do
-  notifies :reload, resources(:service => "nginx"), :delayed
+  nginx_logrotate_template "nginx" do
+    logs "#{node['nginx']['directories']['log_dir']}/*.log"
+    how_often "daily"
+    rotate 7
+    copytruncate false
+    user "root"
+    group "adm"
+    mode "640"
+    pidfile "/var/run/nginx.pid"
+  end
 end

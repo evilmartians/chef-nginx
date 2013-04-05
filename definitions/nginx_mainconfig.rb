@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: nginx
-# Resource:: mainconfig
+# Definition:: nginx_mainconfig
 #
 # Author:: Kirill Kouznetsov
 #
@@ -19,11 +19,15 @@
 # limitations under the License.
 #
 
-actions :create
-
-default_action :create
-
-attribute :template, :kind_of => String, :name_attribute => true
-attribute :variables, :kind_of => Hash, :default => Hash.new
-
-# vim: ts=2 sts=2 sw=2 sta et
+define :nginx_mainconfig do
+  if params.has_key?(:options) and (params[:options].kind_of?(Hash) or params[:options].kind_of?(Mash))
+    begin
+      nginx_main_config_template = @run_context.resource_collection.find({:template => "Nginx main configuration file"})
+      params[:options].each do |k,v|
+        nginx_main_config_template.variables[:options][k] = v
+      end
+    rescue Chef::Exceptions::ResourceNotFound => e
+      Chef::Log.error("Resource template[Nginx main configuration file] not fond. Skipping nginx_mainconfig invocation from recipe[#{cookbook_name}::#{recipe_name}]")
+    end
+  end
+end
