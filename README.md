@@ -1,6 +1,10 @@
 # Description
 
-Installs Nginx from package, sets up some default configurtion and defines LWRP supposed to be used inside your own cookbooks, which you use to manage your infrastructure. 
+Installs Nginx from package, sets up some default configuration and defines LWRP supposed to be used inside your own cookbooks, which you use to manage your infrastructure.
+
+# Sponsor
+
+Sponsored by [Evil Martians](http://evilmartians.com)
 
 # Requirements
 
@@ -16,7 +20,7 @@ I suppose it should also work for last versions of Ubuntu and CenOS/RHEL but no 
 
 ## Chef version
 
-Chef version >= `0.10.10` has to be used. 
+Chef version >= `0.10.10` has to be used.
 
 ## Attributes
 
@@ -25,12 +29,12 @@ Tune the global nginx configuration via the following attributes:
 * `node['nginx']['directories']['conf_dir']` - Path to the directory that contains Nginx configuration files.
 * `node['nginx']['directories']['log_dir']` - Path to the directory where Nginx log file will be stored.
 * `node['nginx']['user']` - User that Nginx will run as.
-* `node['nginx']['gzip']['enable']` - Enables/disables gzip compression in Nginx. 
+* `node['nginx']['gzip']['enable']` - Enables/disables gzip compression in Nginx.
 * `node['nginx']['gzip']['gzip_http_version']` - Sets the minimum HTTP version of a request required to compress a response.
 * `node['nginx']['gzip']['gzip_comp_level']` - Sets a gzip compression level of a response. Acceptable values are in the 1..9 range.
 * `node['nginx']['gzip']['gzip_proxied']` - Enables or disables gzipping of responses for proxied requests depending on the request and response. See http://nginx.org/en/docs/http/ngx_http_gzip_module.html#gzip_proxied for more.
 * `node['nginx']['gzip']['gzip_disable']` - Disables gzipping of responses for requests with 'User-Agent' header fields matching any of the specified regular expressions. The special mask 'msie6' (0.7.12) corresponds to the regular expression 'MSIE [4-6]\.' but works faster.
-* `node['nginx']['gzip']['gzip_vary']` - Enables or disables emitting the 'Vary: Accept-Encoding' response header field if the directives gzip, gzip_static, or gunzip are active. 
+* `node['nginx']['gzip']['gzip_vary']` - Enables or disables emitting the 'Vary: Accept-Encoding' response header field if the directives gzip, gzip_static, or gunzip are active.
 * `node['nginx']['gzip']['gzip_types']` - Enables gzipping of responses for the specified MIME types in addition to 'text/html'. The special value '*' matches any MIME type (0.8.29). Responses with the type 'text/html' are always compressed.
 * `node['nginx']['reset_timedout_connection']` - Enables or disables resetting of timed out connections.
 * `node['nginx']['keepalive']` - Enables or disables keep-alive client connections.
@@ -47,27 +51,27 @@ This cookbook provides only one recipe:
 
 ## default.rb
 
-This default recipe will make some basic steps: 
+This default recipe will make some basic steps:
 
 * installs Nginx from the package that is provided by your OS's package manager ("pin" the desired version using another cookbook);
 * creates all directories for configuration, directory for log files, etc;
 * creates default `nginx.conf` file and associated files;
 * configures log rotation for Nginx;
 * enables and starts Nginx service;
-* runs resource that removes Nginx configuration files for sites, which are not defined by this cookbook's LWRP.  
+* runs resource that removes Nginx configuration files for sites, which are not defined by this cookbook's LWRP.
 
 # Usage
 
 ## Wrapper-cookbook way
 
-This cookbook has been designed to provide **LWRP** for your own infrastructure recipes. First of all, we should make our infrastructure cookbook to load this one. 
-* Do it by adding the line `depends nginx` to your cookbook's metadata.rb. 
+This cookbook has been designed to provide **LWRP** for your own infrastructure recipes. First of all, we should make our infrastructure cookbook to load this one.
+* Do it by adding the line `depends nginx` to your cookbook's metadata.rb.
 * To make all default preparations for using Nginx invoke `include_recipe "nginx"` inside your designated recipe.
 * Now feel free to use all available LWRP provided by this cookbook.
 
 ## Roles-based way
 
-Another way to use this cookbook is just to add `recipe[nginx]` to your **run_list** before your recipe, which is resonsible for your infrastructure. 
+Another way to use this cookbook is just to add `recipe[nginx]` to your **run_list** before your recipe, which is resonsible for your infrastructure.
 
 I personally prefer the first way because if you stick to it you'll eventually get complete and explicit "documentation" for your specific server installation. But in any case, you'll get Nginx installed, nginx.conf configured from the default template we provide, **LWRP** defined and ready to use.
 
@@ -75,7 +79,7 @@ I personally prefer the first way because if you stick to it you'll eventually g
 
 ### nginx_site
 
-This resource manages your Nginx sites configuraions. 
+This resource manages your Nginx sites configuraions.
 
 #### Actions
 
@@ -174,7 +178,7 @@ end
 
 ### nginx\_mainconfig
 
-If you want to use a custom template for Nginx main configuration file, you can use this resource. It will search for the `:template` file in the "templates" directory of the cookbook that it is invoked from. In fact, you can invoke it as many times as you want, but only the last invokation will make changes to the system. 
+If you want to use a custom template for Nginx main configuration file, you can use this resource. It will search for the `:template` file in the "templates" directory of the cookbook that it is invoked from. In fact, you can invoke it as many times as you want, but only the last invokation will make changes to the system.
 And the first place where it is invoked is default recipe of this cookbook.
 
 #### Actions
