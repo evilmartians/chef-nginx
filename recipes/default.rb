@@ -87,7 +87,7 @@ rescue Chef::Exceptions::ResourceNotFound => e
         'conf_dir'             => node['nginx']['directories']['conf_dir'],
         'worker_connections'   => node['nginx']['worker_connections'],
         'worker_rlimit_nofile' => node['nginx']['worker_rlimit_nofile'],
-        'log_dir'              =>  node['nginx']['directories']['log_dir']
+        'log_dir'              => node['nginx']['directories']['log_dir']
       })
     )
     notifies :reload, resources(:service => "nginx"), :delayed

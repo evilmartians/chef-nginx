@@ -21,7 +21,7 @@
 
 def initialize(new_resource, run_context)
   super(new_resource, run_context)
-  
+
   #Make sure we have logratate daemon installed.
   p = package "logrotate" do
     action :nothing
@@ -31,12 +31,12 @@ end
 
 action :enable do
   Chef::Log.info("#{new_resource}: Enabling Nginx logrotation.")
- 
+
   logrotate_template = template "/etc/logrotate.d/#{new_resource.name}" do
     action :create
     owner "root"
     group "root"
-    source "logrotate-nginx.erb" 
+    source "logrotate-nginx.erb"
     variables(
       :logs         => new_resource.logs,
       :how_often    => new_resource.how_often,
@@ -47,7 +47,7 @@ action :enable do
       :mode         => new_resource.mode,
       :pidfile      => new_resource.pidfile
     )
-  end  
+  end
 
   if logrotate_template.updated_by_last_action?
     new_resource.updated_by_last_action(true)

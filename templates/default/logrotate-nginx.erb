@@ -3,9 +3,9 @@
 
 <%= @logs %> {
     <%= @how_often ? @how_often : "daily" %>
-    <% if @copytruncate -%> 
+    <% if @copytruncate -%>
     copytruncate
-    <% end -%> 
+    <% end -%>
     missingok
     notifempty
     rotate <%= @rotate %>

@@ -21,14 +21,14 @@
 
 def initialize(new_resource, run_context)
   super(new_resource, run_context)
-  
+
   @site_config = "#{node['nginx']['directories']['conf_dir']}/sites-available/#{new_resource.name}.conf"
   @symlink = "#{node['nginx']['directories']['conf_dir']}/sites-enabled/#{new_resource.name}.conf"
 end
 
 action :create do
   Chef::Log.info("Creating #{new_resource} config.") unless ::File.exists? @site_config
- 
+
   template_file = (new_resource.template.nil? or new_resource.template.empty?) ? "#{new_resource.name}.conf.erb" : new_resource.template
 
   site_template = nil
@@ -83,7 +83,7 @@ end
 
 action :disable do
   if ::File.symlink? @symlink
-    Chef::Log.info("Disabling #{new_resource} config.") 
+    Chef::Log.info("Disabling #{new_resource} config.")
 
     site_link = link @symlink do
       action :delete
@@ -98,10 +98,10 @@ end
 
 action :delete do
   if ::File.exists? @site_config
-    Chef::Log.info("Deleting #{new_resource} config.") 
+    Chef::Log.info("Deleting #{new_resource} config.")
 
     action_disable
-    
+
     site_file = file @site_config do
       action :delete
     end

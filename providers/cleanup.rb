@@ -21,11 +21,11 @@
 
 action :run do
   Chef::Log.info("#{new_resource} Disabling up unmanaged Nginx configurations")
-  
+
   file_list = ::Dir.glob(::File.join(new_resource.path, '*'))
 
   protected_files = run_context.resource_collection.all_resources.select do |resource|
-    resource.resource_name == "#{new_resource.cookbook_name}_site".to_sym 
+    resource.resource_name == "#{new_resource.cookbook_name}_site".to_sym
   end.map do |resource|
     ::File.join(new_resource.path, "#{resource.name}.conf")
   end

@@ -4,7 +4,7 @@
 <% %w{daemon debug_points error_log lock_file master_process pcre_jit pid ssl_engine timer_resolution user worker_cpu_affinity worker_priority worker_processes worker_rlimit_core worker_rlimit_nofile worker_rlimit_sigpending working_directory}.each do |opt| -%>
 <% if @options.has_key?(opt) -%>
 <%= "#{opt} #{@options[opt]};" %>
-<% end -%> 
+<% end -%>
 <% end -%>
 <% if @options.has_key?('env') and @options['env'].is_a?(Array) -%>
 
@@ -17,7 +17,7 @@ events {
   <% %w{accept_mutex accept_mutex_delay multi_accept use worker_aio_requests worker_connections}.each do |opt| -%>
   <% if @options.has_key?(opt) -%>
   <%= "#{opt} #{@options[opt]};" %>
-  <% end -%> 
+  <% end -%>
   <% end -%>
   <% if @options.has_key?('debug_connection') and @options['debug_connection'].is_a?(Array) -%>
 
