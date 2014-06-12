@@ -67,6 +67,10 @@ rescue Chef::Exceptions::ResourceNotFound => e
     source "welcome-to-nginx.html"
   end
 
+  file "/etc/nginx/conf.d/default.conf" do
+    action :delete
+  end
+
   service "nginx" do
     supports :status => true, :restart => true, :reload => true
     action [ :enable, :start ]
