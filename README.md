@@ -24,26 +24,15 @@ Chef version >= `0.10.10` has to be used.
 
 ## Attributes
 
-Tune the global nginx configuration via the following attributes:
+Defaults that are used to configure nginx. If you want to change one of this parameters in nginx consider using provided LWRP and definitions.
 
-* `node['nginx']['directories']['conf_dir']` - Path to the directory that contains Nginx configuration files.
-* `node['nginx']['directories']['log_dir']` - Path to the directory where Nginx log file will be stored.
-* `node['nginx']['user']` - User that Nginx will run as.
-* `node['nginx']['gzip']['enable']` - Enables/disables gzip compression in Nginx.
-* `node['nginx']['gzip']['gzip_http_version']` - Sets the minimum HTTP version of a request required to compress a response.
-* `node['nginx']['gzip']['gzip_comp_level']` - Sets a gzip compression level of a response. Acceptable values are in the 1..9 range.
-* `node['nginx']['gzip']['gzip_proxied']` - Enables or disables gzipping of responses for proxied requests depending on the request and response. See http://nginx.org/en/docs/http/ngx_http_gzip_module.html#gzip_proxied for more.
-* `node['nginx']['gzip']['gzip_disable']` - Disables gzipping of responses for requests with 'User-Agent' header fields matching any of the specified regular expressions. The special mask 'msie6' (0.7.12) corresponds to the regular expression 'MSIE [4-6]\.' but works faster.
-* `node['nginx']['gzip']['gzip_vary']` - Enables or disables emitting the 'Vary: Accept-Encoding' response header field if the directives gzip, gzip_static, or gunzip are active.
-* `node['nginx']['gzip']['gzip_types']` - Enables gzipping of responses for the specified MIME types in addition to 'text/html'. The special value '*' matches any MIME type (0.8.29). Responses with the type 'text/html' are always compressed.
-* `node['nginx']['reset_timedout_connection']` - Enables or disables resetting of timed out connections.
-* `node['nginx']['keepalive']` - Enables or disables keep-alive client connections.
-* `node['nginx']['keepalive_timeout']` - The first parameter sets a timeout during which a keep-alive client connection will stay open on the server side. The optional second parameter sets a value in the 'Keep-Alive: timeout=time' response header field. Two parameters may differ.
-* `node['nginx']['worker_processes']` - Defines the number of worker processes for Nginx daemon.
-* `node['nginx']['worker_connections']` - Sets the maximum number of simultaneous connections that can be opened by a worker process.
-* `node['nginx']['server_names_hash_bucket_size']` - Sets the bucket size for the server names hash tables. See this http://nginx.org/en/docs/hash.html for details.
-* `node['nginx']['worker_rlimit_nofile']` - Changes the limit on the maximum number of open files (RLIMIT_NOFILE) for worker processes. Used to increase the limit without restarting the main process.
-* `node['nginx']['types_hash_bucket_size']` - Sets the bucket size for the types hash tables. See this http://nginx.org/en/docs/hash.html for datails.
+* `node['nginx']['directories']['conf_dir']` - Base nginx config directory. Default `/etc/nginx`.
+* `node['nginx']['directories']['log_dir']` - Directory for nginx log files. Default `/var/log/nginx`.
+* `node['nginx']['user']` - Default user that nginx will use to run worker processes. Default: `www-data`.
+* `node['nginx']['worker_processes']` - Number of nginx workers. Default `cpu['total']`.
+* `node['nginx']['worker_connections'] - Number of simultaneous connections that one worker can serve. Default `8192`.
+* `node['nginx']['worker_rlimit_nofile']` - Specifies the value for maximum file descriptors that can be opened by one worker process. Default `8192`.
+
 
 # Recipes
 
@@ -178,68 +167,69 @@ end
 
 ### nginx\_mainconfig
 
-If you want to use a custom template for Nginx main configuration file, you can use this resource. It will search for the `:template` file in the "templates" directory of the cookbook that it is invoked from. In fact, you can invoke it as many times as you want, but only the last invokation will make changes to the system.
-And the first place where it is invoked is default recipe of this cookbook.
+If you want to customize template for Nginx main configuration file, you can use this definition. It will apply passed attributes to the _nginx.conf_. You can only use a fixed number of core arguments that are listed below. All other Nginx arguments are meant to be set via site configurations(or conf.d directory). It can be invoked any number of times and **overwrite previous** changes from previous invocations so be cautious!
 
-#### Actions
+#### List of allowed attributes
 
-<table>
-  <thead>
-    <tr>
-      <th>Action</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>create</td>
-      <td>Creates main Nginx configuration file <code>nginx.conf</code></td>
-      <td>Yes</td>
-    </tr>
-  </tbody>
-</table>
+* [accept_mutex](http://nginx.org/en/docs/ngx_core_module.html#accept_mutex)
+* [accept_mutex_delay](http://nginx.org/en/docs/ngx_core_module.html#accept_mutex_delay)
+* [daemon](http://nginx.org/en/docs/ngx_core_module.html#daemon)
+* [debug_points](http://nginx.org/en/docs/ngx_core_module.html#debug_points)
+* [error_log](http://nginx.org/en/docs/ngx_core_module.html#error_log)
+* [lock_file](http://nginx.org/en/docs/ngx_core_module.html#lock_file)
+* [master_process](http://nginx.org/en/docs/ngx_core_module.html#master_process)
+* [multi_accept](http://nginx.org/en/docs/ngx_core_module.html#multi_accept)
+* [pcre_jit](http://nginx.org/en/docs/ngx_core_module.html#pcre_jit)
+* [pid](http://nginx.org/en/docs/ngx_core_module.html#pid)
+* [server_names_hash_bucket_size](http://nginx.org/en/docs/http/ngx_http_core_module.html#server_names_hash_bucket_size)
+* [server_names_hash_max_size](http://nginx.org/en/docs/http/ngx_http_core_module.html#server_names_hash_max_size)
+* [ssl_engine](http://nginx.org/en/docs/ngx_core_module.html#ssl_engine)
+* [timer_resolution](http://nginx.org/en/docs/ngx_core_module.html#timer_resolution)
+* [types_hash_bucket_size](http://nginx.org/en/docs/http/ngx_http_core_module.html#types_hash_bucket_size)
+* [use](http://nginx.org/en/docs/ngx_core_module.html#use)
+* [user](http://nginx.org/en/docs/ngx_core_module.html#user)
+* [variables_hash_bucket_size](http://nginx.org/en/docs/http/ngx_http_core_module.html#variables_hash_bucket_size)
+* [variables_hash_max_size](http://nginx.org/en/docs/http/ngx_http_core_module.html#variables_hash_max_size)
+* [worker_connections](http://nginx.org/en/docs/ngx_core_module.html#worker_connections)
+* [worker_aio_requests](http://nginx.org/en/docs/ngx_core_module.html#worker_aio_requests)
+* [worker_cpu_affinity](http://nginx.org/en/docs/ngx_core_module.html#worker_cpu_affinity)
+* [worker_priority](http://nginx.org/en/docs/ngx_core_module.html#worker_priority)
+* [worker_processes](http://nginx.org/en/docs/ngx_core_module.html#worker_processes)
+* [worker_rlimit_core](http://nginx.org/en/docs/ngx_core_module.html#worker_rlimit_core)
+* [worker_rlimit_nofile](http://nginx.org/en/docs/ngx_core_module.html#worker_rlimit_nofile)
+* [worker_rlimit_sigpending](http://nginx.org/en/docs/ngx_core_module.html#worker_rlimit_sigpending)
+* [working_directory](http://nginx.org/en/docs/ngx_core_module.html#working_directory)
 
-#### Attributes
+There are also attributes that can accept either a string or an array of strings:
 
-<table>
-  <thead>
-    <tr>
-      <th>Attribute</th>
-      <th>Description</th>
-      <th>Default Value</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>template</td>
-      <td><b>Name attribute:</b> erb template file, which will be used.
-      </td>
-      <td><code>nil</code></td>
-    </tr>
-    <tr>
-      <td>variables</td>
-      <td>
-        Variables to be used in the template.
-      </td>
-      <td><code>Hash.new</code></td>
-    </tr>
-  </tbody>
-</table>
+* [env](http://nginx.org/en/docs/ngx_core_module.html#env)
+* [debug_connection](http://nginx.org/en/docs/ngx_core_module.html#debug_connection)
+
 
 #### Examples
 
 ```ruby
-nginx_mainconfig "nginx-configuration.erb"
+nginx_mainconfig do
+  error_log "/var/log/nginx/new-error.log"
+  pid "/var/run/nginx/nginx.pid"
 
-# or
+  env [
+      "MALLOC_OPTIONS",
+      "PERL5LIB=/data/site/modules",
+      "OPENSSL_ALLOW_PROXY_CERTS=1"
+    ]
 
-nginx_mainconfig "nginx.conf.erb" do
-  variables(
-    :workers => 8,
-    :rlimit  => 8192,
-    :gzip    => true
-  )
+  debug_connection [
+    '127.0.0.1',
+    'localhost',
+    '192.0.2.0/24'
+  ]
+end
+
+# Another example for env and debug_connection
+nginx_mainconfig do
+  env "MALLOC_OPTIONS"
+  debug_connection '127.0.0.1'
 end
 ```
 

@@ -23,6 +23,6 @@ actions :run, :disable
 
 default_action :run
 
-attribute :path, :kind_of => String, :name_attribute => true
+attribute :path, kind_of: String, name_attribute: true
 
 # vim: ts=2 sts=2 sw=2 sta et

@@ -27,9 +27,9 @@ def initialize(new_resource, run_context)
 end
 
 action :create do
-  Chef::Log.info("Creating #{new_resource} config.") unless ::File.exists? @site_config
+  Chef::Log.info("Creating #{new_resource} config.") unless ::File.exist? @site_config
 
-  template_file = (new_resource.template.nil? or new_resource.template.empty?) ? "#{new_resource.name}.conf.erb" : new_resource.template
+  template_file = (new_resource.template.nil? || new_resource.template.empty?) ? "#{new_resource.name}.conf.erb" : new_resource.template
 
   site_template = nil
 
@@ -37,18 +37,18 @@ action :create do
     site_template = template @site_config do
       action :create
       mode 0644
-      owner "root"
-      group "root"
+      owner 'root'
+      group 'root'
       source template_file
       variables new_resource.variables
-      notifies :reload, resources(:service => "nginx"), :delayed
+      notifies :reload, resources(service: 'nginx'), :delayed
     end
   else
     site_template = template @site_config do
       action :create
       mode 0644
-      owner "root"
-      group "root"
+      owner 'root'
+      group 'root'
       source template_file
       variables new_resource.variables
     end
@@ -70,15 +70,12 @@ action :enable do
   site_link = link @symlink do
     action :create
     to link_to
-    owner "root"
-    group "root"
-    notifies :reload, resources(:service => "nginx"), :delayed
+    owner 'root'
+    group 'root'
+    notifies :reload, resources(service: 'nginx'), :delayed
   end
 
-  if site_link.updated_by_last_action?
-    new_resource.updated_by_last_action(true)
-  end
-
+  new_resource.updated_by_last_action(site_link.updated_by_last_action?)
 end
 
 action :disable do
@@ -87,7 +84,7 @@ action :disable do
 
     site_link = link @symlink do
       action :delete
-      notifies :reload, resources(:service => "nginx"), :delayed
+      notifies :reload, resources(service: 'nginx'), :delayed
     end
 
     if site_link.updated_by_last_action?
@@ -97,7 +94,7 @@ action :disable do
 end
 
 action :delete do
-  if ::File.exists? @site_config
+  if ::File.exist? @site_config
     Chef::Log.info("Deleting #{new_resource} config.")
 
     action_disable
@@ -111,7 +108,5 @@ action :delete do
     end
   end
 end
-
-
 
 # vim: ts=2 sts=2 sw=2 sta et

@@ -20,8 +20,8 @@
 #
 
 define :nginx_logrotate do
-  nginx_l_t = resources(:nginx_logrotate_template => "nginx")
-  params.each do |param,value|
+  nginx_l_t = resources(nginx_logrotate_template: 'nginx')
+  params.each do |param, value|
     next if param == :name
     nginx_l_t.send(param, value)
   end

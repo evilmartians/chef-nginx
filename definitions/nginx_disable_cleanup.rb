@@ -20,7 +20,7 @@
 #
 
 define :nginx_disable_cleanup do
-  res = resources(:nginx_cleanup => "#{node['nginx']['directories']['conf_dir']}/sites-enabled/")
+  res = resources(nginx_cleanup: "#{node['nginx']['directories']['conf_dir']}/sites-enabled/")
   res.action :disable
 end
 

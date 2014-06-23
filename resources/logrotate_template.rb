@@ -23,19 +23,19 @@ include Chef::Mixin::Securable
 
 actions :enable, :disable
 
-attribute :name, :name_attribute => true, :kind_of => String
-attribute :logs, :kind_of => String, :default => "/var/log/nginx/*.log"
-attribute :how_often, :kind_of => String, :default => "daily", :equal_to => [ "daily", "weekly", "monthly" ]
-attribute :rotate, :kind_of => Integer, :default => 7
-attribute :copytruncate, :kind_of => [TrueClass, FalseClass], :default => false
-attribute :pidfile, :kind_of => String, :default => "/var/run/nginx.pid"
+attribute :name, name_attribute: true, kind_of: String
+attribute :logs, kind_of: String, default: '/var/log/nginx/*.log'
+attribute :how_often, kind_of: String, default: 'daily', equal_to: %w(daily weekly monthly)
+attribute :rotate, kind_of: Integer, default: 7
+attribute :copytruncate, kind_of: [TrueClass, FalseClass], default: false
+attribute :pidfile, kind_of: String, default: '/var/run/nginx.pid'
 
-def initialize(name, run_context=nil)
+def initialize(name, run_context = nil)
   super
   @action = :enable
-  @user   = "root"
-  @group  = "adm"
-  @mode   = "640"
+  @user   = 'root'
+  @group  = 'adm'
+  @mode   = 0640
 end
 
 # vim: ts=2 sts=2 sw=2 sta et

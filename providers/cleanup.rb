@@ -24,9 +24,11 @@ action :run do
 
   file_list = ::Dir.glob(::File.join(new_resource.path, '*'))
 
-  protected_files = run_context.resource_collection.all_resources.select do |resource|
+  protected_resources = run_context.resource_collection.all_resources.select do |resource|
     resource.resource_name == "#{new_resource.cookbook_name}_site".to_sym
-  end.map do |resource|
+  end
+
+  protected_files = protected_resources.map do |resource|
     ::File.join(new_resource.path, "#{resource.name}.conf")
   end
 
@@ -38,9 +40,7 @@ action :run do
     ::File.unlink file
   end
 
-  if not kill_them_with_fire.empty?
-    new_resource.updated_by_last_action(true)
-  end
+  new_resource.updated_by_last_action(true) unless kill_them_with_fire.empty?
 end
 
 action :disable do

@@ -22,8 +22,8 @@
 def initialize(new_resource, run_context)
   super(new_resource, run_context)
 
-  #Make sure we have logratate daemon installed.
-  p = package "logrotate" do
+  # Make sure we have logratate daemon installed.
+  p = package 'logrotate' do
     action :nothing
   end
   p.run_action(:install)
@@ -34,18 +34,18 @@ action :enable do
 
   logrotate_template = template "/etc/logrotate.d/#{new_resource.name}" do
     action :create
-    owner "root"
-    group "root"
-    source "logrotate-nginx.erb"
+    owner 'root'
+    group 'root'
+    source 'logrotate-nginx.erb'
     variables(
-      :logs         => new_resource.logs,
-      :how_often    => new_resource.how_often,
-      :rotate       => new_resource.rotate,
-      :copytruncate => new_resource.copytruncate,
-      :user         => new_resource.user,
-      :group        => new_resource.group,
-      :mode         => new_resource.mode,
-      :pidfile      => new_resource.pidfile
+      logs:         new_resource.logs,
+      how_often:    new_resource.how_often,
+      rotate:       new_resource.rotate,
+      copytruncate: new_resource.copytruncate,
+      user:         new_resource.user,
+      group:        new_resource.group,
+      mode:         new_resource.mode,
+      pidfile:      new_resource.pidfile
     )
   end
 
