@@ -20,14 +20,16 @@
 #
 
 define :nginx_mainconfig do
-  if params.has_key?(:options) and (params[:options].kind_of?(Hash) or params[:options].kind_of?(Mash))
-    begin
-      nginx_main_config_template = @run_context.resource_collection.find({:template => "Nginx main configuration file"})
-      params[:options].each do |k,v|
-        nginx_main_config_template.variables[:options][k] = v
-      end
-    rescue Chef::Exceptions::ResourceNotFound => e
-      Chef::Log.error("Resource template[Nginx main configuration file] not fond. Skipping nginx_mainconfig invocation from recipe[#{cookbook_name}::#{recipe_name}]")
+  Chef::Log.info("Changing nginx.conf from recipe[#{cookbook_name}::#{recipe_name}]:")
+  begin
+    nginx_main_config_template = @run_context.resource_collection.find(template: 'Nginx main configuration file')
+
+    params.each do |k, v|
+      next if k == :name
+      Chef::Log.info("nginx.conf: #{k} -> #{v}")
+      nginx_main_config_template.variables[:options][k] = v
     end
+  rescue Chef::Exceptions::ResourceNotFound
+    Chef::Log.error("Resource template[Nginx main configuration file] not fond. Skipping nginx_mainconfig invocation from recipe[#{cookbook_name}::#{recipe_name}]")
   end
 end
