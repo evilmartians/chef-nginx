@@ -6,10 +6,14 @@
 <%= "#{opt} #{@options[opt]};" %>
 <% end -%>
 <% end -%>
-<% if @options.has_key?('env') and @options['env'].is_a?(Array) -%>
+<% if @options.has_key?('env') -%>
 
+<% if @options['env'].is_a?(Array) -%>
 <% @options['env'].each do |env_var| -%>
 env <%= env_var %>;
+<% end -%>
+<% else -%>
+env <%= @options['env'] %>;
 <% end -%>
 <% end -%>
 
@@ -19,10 +23,14 @@ events {
   <%= "#{opt} #{@options[opt]};" %>
   <% end -%>
   <% end -%>
-  <% if @options.has_key?('debug_connection') and @options['debug_connection'].is_a?(Array) -%>
+  <% if @options.has_key?('debug_connection') -%>
 
+  <% if @options['debug_connection'].is_a?(Array) -%>
   <% @options['debug_connection'].each do |connection| -%>
   debug_connection <%= connection %>;
+  <% end -%>
+  <% else -%>
+  debug_connection <%= @options['debug_connection'] %>;
   <% end -%>
   <% end -%>
 }
