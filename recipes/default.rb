@@ -26,7 +26,7 @@ begin
   end
 
   Chef::Log.debug("Resources found inside recipe[#{cookbook_name}::#{recipe_name}]: #{this_recipe_resource_collection.length}")
-  raise Chef::Exceptions::ResourceNotFound if this_recipe_resource_collection.length == 0
+  fail Chef::Exceptions::ResourceNotFound if this_recipe_resource_collection.length == 0
 rescue Chef::Exceptions::ResourceNotFound
   package 'nginx'
 
@@ -51,6 +51,17 @@ rescue Chef::Exceptions::ResourceNotFound
       owner 'root'
       group 'root'
       mode 0755
+    end
+  end
+
+  # Temporary fix:
+  # conf.d/default.conf
+  # conf.d/example_ssl.conf
+  # These files are installed automatically from nginx package. They
+  # may create a conflict with your actual configuration.g
+  %(default example_ssl).each do |f|
+    file "#{node['nginx']['directories']['conf_dir']}/conf.d/#{f}.conf"
+      action :delete
     end
   end
 
