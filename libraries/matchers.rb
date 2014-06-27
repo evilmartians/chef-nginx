@@ -23,4 +23,11 @@ if defined?(ChefSpec)
     ChefSpec::Matchers::ResourceMatcher.new(:logrotate_template, :disable, resource_name)
   end
 
+  def run_nginx_cleanup(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:nginx_cleanup, :run, resource_name)
+  end
+
+  def disable_nginx_cleanup(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:nginx_cleanup, :disable, resource_name)
+  end
 end
