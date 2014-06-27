@@ -15,12 +15,12 @@ if defined?(ChefSpec)
     ChefSpec::Matchers::ResourceMatcher.new(:nginx_site, :disable, resource_name)
   end
 
-  def enable_logrotate_template(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:logrotate_template, :enable, resource_name)
+  def enable_nginx_logrotate_template(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:nginx_logrotate_template, :enable, resource_name)
   end
 
-  def disable_logrotate_template(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:logrotate_template, :disable, resource_name)
+  def disable_nginx_logrotate_template(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:nginx_logrotate_template, :disable, resource_name)
   end
 
   def run_nginx_cleanup(resource_name)
