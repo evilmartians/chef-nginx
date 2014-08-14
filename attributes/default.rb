@@ -22,7 +22,7 @@
 default['nginx']['directories']['conf_dir'] = '/etc/nginx'
 default['nginx']['directories']['log_dir']  = '/var/log/nginx'
 default['nginx']['user']                    = 'www-data'
-default['nginx']['worker_processes']        = cpu['total']
+default['nginx']['worker_processes']        = node['cpu']['total']
 default['nginx']['worker_connections']      = 8192
 default['nginx']['worker_rlimit_nofile']    = 8192
 
