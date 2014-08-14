@@ -55,7 +55,7 @@ action :enable do
 
 end
 
-action :disble do
+action :disable do
   Chef::Log.info("#{new_resource}: deleting /etc/logrotate.d/#{new_resource.name}")
 
   logrotate_file = file "/etc/logrotate.d/#{new_resource.name}" do
