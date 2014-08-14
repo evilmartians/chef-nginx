@@ -1,0 +1,30 @@
+# !!!ATTENTION!!!
+# This file is managed by Chef.
+# All manual changes will be overwritten during the next chef run.
+<%-
+  types = @types rescue %w(
+    text/plain
+    text/css
+    application/x-javascript
+    text/xml
+    application/xml
+    application/xml+rss
+    text/javascript
+    application/json
+  )
+%>
+<%-
+  enabled = if @enabled && ['on', true].include?(@enabled)
+              'on'
+            else
+              'off'
+            end
+%>
+
+gzip <%= enabled %>;
+gzip_http_version <%= @http_version rescue '1.0' %>;
+gzip_comp_level <%= @comp_version rescue 4 %>;
+gzip_proxied any;
+gzip_types <%= types.join(' ') %>;
+gzip_disable msie6;
+gzip_vary <%= @vary rescue 'off' %>;
