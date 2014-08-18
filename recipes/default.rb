@@ -60,7 +60,7 @@ rescue Chef::Exceptions::ResourceNotFound
   # These files are installed automatically from nginx package. They
   # may create a conflict with your actual configuration.g
   %(default example_ssl).each do |f|
-    file "#{node['nginx']['directories']['conf_dir']}/conf.d/#{f}.conf"
+    file "#{node['nginx']['directories']['conf_dir']}/conf.d/#{f}.conf" do
       action :delete
     end
   end
