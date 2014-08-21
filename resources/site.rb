@@ -26,5 +26,6 @@ default_action :enable
 attribute :name, name_attribute: true, kind_of: String
 attribute :template, kind_of: String
 attribute :variables, kind_of: Hash, default: {}
+attribute :cookbook, kind_of: String
 
 # vim: ts=2 sts=2 sw=2 sta et

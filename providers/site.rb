@@ -40,6 +40,7 @@ action :create do
       owner 'root'
       group 'root'
       source template_file
+      cookbook new_resource.cookbook if new_resource.cookbook
       variables new_resource.variables
       notifies :reload, resources(service: 'nginx'), :delayed
     end
@@ -50,6 +51,7 @@ action :create do
       owner 'root'
       group 'root'
       source template_file
+      cookbook new_resource.cookbook if new_resource.cookbook
       variables new_resource.variables
     end
   end
