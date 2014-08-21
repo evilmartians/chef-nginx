@@ -19,6 +19,10 @@
 # limitations under the License.
 #
 
+# Inlude Securable for
+#  attribute :user
+#  attribute :group
+#  attribute :mode
 include Chef::Mixin::Securable
 
 actions :enable, :disable
@@ -35,7 +39,13 @@ def initialize(name, run_context = nil)
   @action = :enable
   @user   = 'root'
   @group  = 'adm'
-  @mode   = 0640
+  @mode   = '0640'
+end
+
+# Convert Interger mode representation to String explicitly.
+# Because Oct representation would be converten to Dec insite string otherwise.
+def after_created
+  @mode = @mode.to_s(8) if @mode.is_a?(Integer)
 end
 
 # vim: ts=2 sts=2 sw=2 sta et
