@@ -1,0 +1,29 @@
+# !!!ATTENTION!!!
+# This file is managed by Chef.
+# All manual changes will be overwritten during the next chef run.
+
+<%-
+  opts = {
+    'sendfile' =>                  'on',
+    'tcp_nopush' =>                'on',
+    'tcp_nodelay' =>               'on',
+    'server_tokens' =>             'off',
+    'reset_timedout_connection' => 'off'
+  }
+
+  opts.each do |o,v|
+    var = instance_variable_get("@#{o}").nil? ? opts[o] : instance_variable_get("@#{o}")
+
+    var = if var == true || var == 'on'
+      'on'
+    else
+      'off'
+    end
+%>
+<%= "#{o} #{var};" %>
+<%- end %>
+
+<%- keepalive_timeout = @keepalive_timeout.nil? ? 65 : @keepalive_timeout %>
+<%- if keepalive_timeout %>
+keepalive_timeout <%= keepalive_timeout %>;
+<%- end %>
