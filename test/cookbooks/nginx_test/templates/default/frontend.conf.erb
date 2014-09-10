@@ -1,0 +1,13 @@
+# This is a test configuration for nginx cookbook.
+# Be warned - Managed by Chef!!!
+
+server {
+  listen :80 default;
+  server_name _;
+  root /var/www/;
+  index index.html;
+  charset utf-8;
+
+  access_log <%= node['nginx']['directories']['log_dir'] %>/frontend.access.log detailed;
+  error_log <%= node['nginx']['directories']['log_dir'] %>/frontend.error.log;
+}

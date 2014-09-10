@@ -1,0 +1,7 @@
+name             'nginx_test'
+maintainer       'Kirill Kouznetsov'
+maintainer_email 'agon.smith@gmail.com'
+license          'Apache 2.0'
+description      'Performs test of nginx cookbook'
+long_description 'Performs test of nginx cookbook'
+version          '0.0.1'
