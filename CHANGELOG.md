@@ -1,6 +1,7 @@
 # nginx cookbook CHANGELOG
 
-## v2.2.3 (2014-09-11)
+## 2.2.3
 
-* [Kirill Kouznetsov] - helper template with some handy default variables.
-* [Kirill Kouznetsov] - nginx logrotate accepts more options to be configured: `dateext` and `delaycompress`
+* helper template with some handy default variables.
+* nginx logrotate accepts more options to be configured: `dateext` and `delaycompress`
+* gzip template default behaviour fix.
