@@ -147,20 +147,20 @@ This resource manages your Nginx sites configuraions.
 
 ```ruby
 # We want to use "example.com.conf.erb" template file, do not want to pass any variables.
-nginx_site "example.com"
+nginx_site 'example.com'
 
 # Using custom-named template file and passing some variables, which can be used inside the template.
-nginx_site "forum.example.com" do
+nginx_site 'forum.example.com' do
   action :enable
-  template "forum-nginx.erb"
+  template 'forum-nginx.erb'
   variables(
-    :listen_ip => "10.0.0.10",
-    :remote_ips => [ "10.0.0.2", "10.0.0.4" ]
+    :listen_ip => '10.0.0.10',
+    :remote_ips => [ '10.0.0.2', '10.0.0.4' ]
   )
 end
 
 # Making sure that old site's configuration is disabled even if somebody has enabled it by hands.
-nginx_site "old.example.com" do
+nginx_site 'old.example.com' do
   action :disable
 end
 ```
@@ -205,18 +205,98 @@ There are also attributes that can accept either a string or an array of strings
 * [env](http://nginx.org/en/docs/ngx_core_module.html#env)
 * [debug_connection](http://nginx.org/en/docs/ngx_core_module.html#debug_connection)
 
+## Small handy templates
+
+As mentioned in the previous paragraph - main nginx config file acceps only limited set of options. But we always do some tuning like enabling compression, etc. I've created two small templates for a kind of configuration I usually use. It's a bit ugly and it's atemorary solution but may become usefull if you want some standart and clean confguration fast.
+
+**Invoke each of these templates only once otherwise you'll have invalid nginx config.**
+
+### gzip.conf.erb
+
+Defaults to:
+```
+gzip on;
+gzip_http_version 1.0;
+gzip_comp_level 4;
+gzip_proxied any;
+gzip_types text/plain text/css application/x-javascript text/xml application/xml application/xml+rss text/javascript application/json;
+gzip_disable msie6;
+gzip_vary off;
+```
+
+How to use:
+
+```ruby
+# Use its default parameters.
+nginx_site '00-gzip' do
+  cookbook 'nginx'
+  template 'gzip.conf.erb'
+end
+
+# Or you can fine tune it.
+nginx_site '01-gzip' do
+  cookbook 'nginx'
+  template 'gzip.conf.erb'
+  variables(
+    enabled: true,
+    http_version: '1.0',
+    comp_version: 4,
+    proxied: 'any',
+    types: %w( text/plain text/css ),
+    vary: 'off'
+  )
+end
+```
+
+### some-handy-defaults.conf.erb
+
+Defaults to:
+
+```
+sendfile on;
+tcp_nopush on;
+tcp_nodelay on;
+server_tokens off;
+reset_timedout_connection off;
+
+keepalive_timeout 65;
+```
+
+How to use:
+
+```ruby
+# Use its default parameters.
+nginx_site '02-some-handy-defaults' do
+  cookbook 'nginx'
+  template 'some-handy-defaults.conf.erb'
+end
+
+# Or you can fine tune it.
+nginx_site '03-some-handy-defaults' do
+  cookbook 'nginx'
+  template 'some-handy-defaults.conf.erb'
+  variables(
+    sendfile: 'on',
+    tcp_nopush: 'on',
+    tcp_nodelay: 'on',
+    server_tokens: 'off',
+    reset_timedout_connection: 'off',
+    keepalive_timeout: 65
+  )
+end
+```
 
 #### Examples
 
 ```ruby
 nginx_mainconfig do
-  error_log "/var/log/nginx/new-error.log"
-  pid "/var/run/nginx/nginx.pid"
+  error_log '/var/log/nginx/new-error.log'
+  pid '/var/run/nginx/nginx.pid'
 
   env [
-      "MALLOC_OPTIONS",
-      "PERL5LIB=/data/site/modules",
-      "OPENSSL_ALLOW_PROXY_CERTS=1"
+      'MALLOC_OPTIONS',
+      'PERL5LIB=/data/site/modules',
+      'OPENSSL_ALLOW_PROXY_CERTS=1'
     ]
 
   debug_connection [
@@ -228,7 +308,7 @@ end
 
 # Another example for env and debug_connection
 nginx_mainconfig do
-  env "MALLOC_OPTIONS"
+  env 'MALLOC_OPTIONS'
   debug_connection '127.0.0.1'
 end
 ```
@@ -281,6 +361,16 @@ Log rotation is enabled by default and has following configuration:
       <td><code>false</code></td>
     </tr>
     <tr>
+      <td>dateext</td>
+      <td>If true archive  old  versions  of log files adding a daily extension like YYYYMMDD instead of simply adding a number. The extension may be configured using the dateformat option.</td>
+      <td><code>false</code></td>
+    </tr>
+    <tr>
+      <td>delaycompress</td>
+      <td>If true postpone compression of the previous log file to the next rotation cycle.  This only has effect when used in combination  with  compress. It can be used when some program cannot be told to close its logfile and thus might continue writing to the previous log file for some time.</td>
+      <td><code>true</code></td>
+    </tr>
+    <tr>
       <td>rotate</td>
       <td>Log files are rotated this number of times before being removed.</td>
       <td>7</td>
@@ -319,13 +409,13 @@ end
 
 # Or full tuning
 nginx_logrotate do
-  logs ::File.join(node[:infrastucute_name][:logdir], "*.log")
-  how_often "weekly"
+  logs ::File.join(node[:infrastucute_name][:logdir], '*.log')
+  how_often 'weekly'
   rotate 8
   copytruncate true
-  user "root"
-  group "adm"
-  mode "660"
+  user 'root'
+  group 'adm'
+  mode '660'
 end
 ```
 
@@ -341,4 +431,22 @@ The resource that is used by `nginx_logrotate` definition and default recipe of 
 
 It finds all enabled Nginx site's configuration symlinks (or files if somebody was was too lazy or inattentive :) ) that aren't created using `nginx_site` and deletes them. If you do not want this to happen use `nginx_disable_cleanup` definition described above.
 
-This resource is invoked from default recipe of this cookbook and is made to be invoked only once. 
+This resource is invoked from default recipe of this cookbook and is made to be invoked only once.
+
+# License and Author
+
+Kirill Kouznetsov (agon.smith@gmail.com)
+
+Copyright (C) 2012-2014 Kirill Kouznetsov
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
