@@ -205,6 +205,33 @@ There are also attributes that can accept either a string or an array of strings
 * [env](http://nginx.org/en/docs/ngx_core_module.html#env)
 * [debug_connection](http://nginx.org/en/docs/ngx_core_module.html#debug_connection)
 
+#### Examples
+
+```ruby
+nginx_mainconfig do
+  error_log '/var/log/nginx/new-error.log'
+  pid '/var/run/nginx/nginx.pid'
+
+  env [
+      'MALLOC_OPTIONS',
+      'PERL5LIB=/data/site/modules',
+      'OPENSSL_ALLOW_PROXY_CERTS=1'
+    ]
+
+  debug_connection [
+    '127.0.0.1',
+    'localhost',
+    '192.0.2.0/24'
+  ]
+end
+
+# Another example for env and debug_connection
+nginx_mainconfig do
+  env 'MALLOC_OPTIONS'
+  debug_connection '127.0.0.1'
+end
+```
+
 ## Small handy templates
 
 As mentioned in the previous paragraph - main nginx config file acceps only limited set of options. But we always do some tuning like enabling compression, etc. I've created two small templates for a kind of configuration I usually use. It's a bit ugly and it's atemorary solution but may become usefull if you want some standart and clean confguration fast.
@@ -283,33 +310,6 @@ nginx_site '03-some-handy-defaults' do
     reset_timedout_connection: 'off',
     keepalive_timeout: 65
   )
-end
-```
-
-#### Examples
-
-```ruby
-nginx_mainconfig do
-  error_log '/var/log/nginx/new-error.log'
-  pid '/var/run/nginx/nginx.pid'
-
-  env [
-      'MALLOC_OPTIONS',
-      'PERL5LIB=/data/site/modules',
-      'OPENSSL_ALLOW_PROXY_CERTS=1'
-    ]
-
-  debug_connection [
-    '127.0.0.1',
-    'localhost',
-    '192.0.2.0/24'
-  ]
-end
-
-# Another example for env and debug_connection
-nginx_mainconfig do
-  env 'MALLOC_OPTIONS'
-  debug_connection '127.0.0.1'
 end
 ```
 
