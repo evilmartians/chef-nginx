@@ -13,7 +13,12 @@
     <%- u = @user ? @user : "root" %>
     <%- g = @group ? @group : "adm" %>
     create <%= @mode %> <%= u %> <%= g %>
+    <% if @delaycompress -%>
     delaycompress
+    <% end -%>
+    <% if @dateext -%>
+    dateext
+    <% end -%>
     <% if not @copytruncate -%>
     sharedscripts
     postrotate

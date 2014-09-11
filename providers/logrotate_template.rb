@@ -38,14 +38,16 @@ action :enable do
     group 'root'
     source 'logrotate-nginx.erb'
     variables(
-      logs:         new_resource.logs,
-      how_often:    new_resource.how_often,
-      rotate:       new_resource.rotate,
-      copytruncate: new_resource.copytruncate,
-      user:         new_resource.user,
-      group:        new_resource.group,
-      mode:         new_resource.mode,
-      pidfile:      new_resource.pidfile
+      logs:          new_resource.logs,
+      how_often:     new_resource.how_often,
+      rotate:        new_resource.rotate,
+      copytruncate:  new_resource.copytruncate,
+      user:          new_resource.user,
+      group:         new_resource.group,
+      mode:          new_resource.mode,
+      pidfile:       new_resource.pidfile,
+      dateext:       new_resource.dateext,
+      delaycompress: new_resource.delaycompress
     )
   end
 

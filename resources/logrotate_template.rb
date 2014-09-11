@@ -33,6 +33,8 @@ attribute :how_often, kind_of: String, default: 'daily', equal_to: %w(daily week
 attribute :rotate, kind_of: Integer, default: 7
 attribute :copytruncate, kind_of: [TrueClass, FalseClass], default: false
 attribute :pidfile, kind_of: String, default: '/var/run/nginx.pid'
+attribute :delaycompress, kind_of: [TrueClass, FalseClass], default: true
+attribute :dateext, kind_of: [TrueClass, FalseClass], default: false
 
 def initialize(name, run_context = nil)
   super

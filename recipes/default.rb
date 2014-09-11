@@ -120,6 +120,7 @@ rescue Chef::Exceptions::ResourceNotFound
     how_often 'daily'
     rotate 7
     copytruncate false
+    delaycompress true
     user 'root'
     group 'adm'
     mode 0640
