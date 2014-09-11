@@ -13,11 +13,8 @@
     application/json
   )
 
-  enabled = if @enabled && ['on', true].include?(@enabled)
-              'on'
-            else
-              'off'
-            end
+  enabled = 'off'
+  enabled = 'on' if ( @enabled.nil? || ['on', true].include?(@enabled) )
 %>
 
 gzip <%= enabled %>;
