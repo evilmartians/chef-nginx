@@ -36,7 +36,7 @@ action :create do
   if ::File.symlink? @symlink
     site_template = template @site_config do
       action :create
-      mode 0644
+      mode '0644'
       owner 'root'
       group 'root'
       source template_file
@@ -47,7 +47,7 @@ action :create do
   else
     site_template = template @site_config do
       action :create
-      mode 0644
+      mode '0644'
       owner 'root'
       group 'root'
       source template_file
