@@ -24,4 +24,5 @@ apt_repository 'nginx' do
   distribution node['lsb']['codename']
   components ['nginx']
   key 'http://nginx.org/keys/nginx_signing.key'
+  only_if { node['platform_family'] == 'debian' }
 end
