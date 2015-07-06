@@ -64,6 +64,10 @@ Another way to use this cookbook is just to add `recipe[nginx]` to your **run_li
 
 I personally prefer the first way because if you stick to it you'll eventually get complete and explicit "documentation" for your specific server installation. But in any case, you'll get Nginx installed, nginx.conf configured from the default template we provide, **LWRP** defined and ready to use.
 
+## Official Nginx repo or default distro package
+
+If you would like to use nginx package from official nginx repo, then just add `recipe[nginx::official-repo]` or `include_recipe 'nginx::official-repo'` before `nginx` recipe invokation. Other wise default nginx package would be used from distro repository.
+
 ## LWRP
 
 ### nginx_site
