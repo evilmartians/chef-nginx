@@ -1,6 +1,10 @@
 # nginx cookbook CHANGELOG
 
-## 2.2.5
+## 2.2.6 (2015-06-07)
+
+* Issue #10 fix.
+
+## 2.2.5 (2015-06-07)
 
 * Quotation marks around file modes in chef recipes.
 * New default mime type: woff2.
