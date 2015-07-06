@@ -28,7 +28,15 @@ begin
   Chef::Log.debug("Resources found inside recipe[#{cookbook_name}::#{recipe_name}]: #{this_recipe_resource_collection.length}")
   fail Chef::Exceptions::ResourceNotFound if this_recipe_resource_collection.length == 0
 rescue Chef::Exceptions::ResourceNotFound
-  package 'nginx'
+  execute 'kill nginx after installation' do
+    command '/usr/bin/pkill nginx'
+    action :nothing
+    notifies :start, 'service[nginx]'
+  end
+
+  package 'nginx' do
+    notifies :run, 'execute[kill nginx after installation]'
+  end
 
   directory node['nginx']['directories']['log_dir'] do
     mode '0755'
