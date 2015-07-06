@@ -31,7 +31,7 @@ rescue Chef::Exceptions::ResourceNotFound
   package 'nginx'
 
   directory node['nginx']['directories']['log_dir'] do
-    mode 0755
+    mode '0755'
     owner node['nginx']['user']
     action :create
   end
@@ -39,7 +39,7 @@ rescue Chef::Exceptions::ResourceNotFound
   %w(nxensite nxdissite).each do |nxscript|
     template "/usr/sbin/#{nxscript}" do
       source "#{nxscript}.erb"
-      mode 0755
+      mode '0755'
       owner 'root'
       group 'root'
     end
@@ -50,7 +50,7 @@ rescue Chef::Exceptions::ResourceNotFound
       path "#{node['nginx']['directories']['conf_dir']}/#{dir}/"
       owner 'root'
       group 'root'
-      mode 0755
+      mode '0755'
     end
   end
 
@@ -69,7 +69,7 @@ rescue Chef::Exceptions::ResourceNotFound
     path '/var/www/'
     owner 'root'
     group 'root'
-    mode 0755
+    mode '0755'
   end
 
   cookbook_file '/var/www/index.html' do
@@ -106,7 +106,7 @@ rescue Chef::Exceptions::ResourceNotFound
   cookbook_file "#{node['nginx']['directories']['conf_dir']}/mime.types" do
     owner 'root'
     group 'root'
-    mode 0644
+    mode '0644'
     source 'mime.types'
     notifies :reload, resources(service: 'nginx'), :delayed
   end
@@ -123,7 +123,7 @@ rescue Chef::Exceptions::ResourceNotFound
     delaycompress true
     user 'root'
     group 'adm'
-    mode 0640
+    mode '0640'
     pidfile '/var/run/nginx.pid'
   end
 end

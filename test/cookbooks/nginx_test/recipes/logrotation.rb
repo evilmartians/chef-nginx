@@ -21,5 +21,5 @@ nginx_logrotate do
   how_often 'weekly'
   dateext true
   rotate 2
-  mode 0644
+  mode '0644'
 end

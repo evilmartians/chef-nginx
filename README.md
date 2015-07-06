@@ -404,7 +404,7 @@ Log rotation is enabled by default and has following configuration:
 # Store rotated logs for 30 days and make them readable by everybody
 nginx_logrotate do
   rotate 30
-  mode 644
+  mode '644'
 end
 
 # Or full tuning
