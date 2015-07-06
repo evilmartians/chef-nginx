@@ -120,7 +120,12 @@ rescue Chef::Exceptions::ResourceNotFound
   end
 
   nginx_cleanup "#{node['nginx']['directories']['conf_dir']}/sites-enabled/" do
+    action :nothing
     notifies :reload, resources(service: 'nginx'), :delayed
+  end
+
+  ruby 'dummy delay for nginx_cleanup' do
+    notifies :run, "nginx_cleanup[#{node['nginx']['directories']['conf_dir']}/sites-enabled/]", :delayed
   end
 
   nginx_logrotate_template 'nginx' do
