@@ -1,5 +1,10 @@
 # nginx cookbook CHANGELOG
 
+## 2.2.5
+
+* Quotation marks around file modes in chef recipes.
+* New default mime type: woff2.
+
 ## 2.2.4
 
 * `recipe[nginx::official-repo]` that sets up official apt repository on Debian/Ubuntu.
