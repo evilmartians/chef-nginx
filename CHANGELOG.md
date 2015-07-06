@@ -1,5 +1,9 @@
 # nginx cookbook CHANGELOG
 
+## 2.2.7 (2015-06-07)
+
+* Bugfix: Making sure Nginx process is not stalled after initial installation.
+
 ## 2.2.6 (2015-06-07)
 
 * Issue #10 fix.
