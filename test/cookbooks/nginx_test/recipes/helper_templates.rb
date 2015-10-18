@@ -22,9 +22,9 @@ nginx_site '00-gzip-defaults' do
   template 'gzip.conf.erb'
 end
 
-nginx_site '01-some-handy-defaults' do
+template '/tmp/01-some-handy-defaults' do
   cookbook 'nginx'
-  template 'some-handy-defaults.conf.erb'
+  source 'some-handy-defaults.conf.erb'
   variables(
     sendfile: false,
     tcp_nopush: 'on',
@@ -34,16 +34,16 @@ nginx_site '01-some-handy-defaults' do
   )
 end
 
-nginx_site '02-some-handy-defaults' do
+template '/tmp/02-some-handy-defaults' do
   cookbook 'nginx'
-  template 'some-handy-defaults.conf.erb'
+  source 'some-handy-defaults.conf.erb'
   variables(
     server_tokens: 'on',
     reset_timedout_connection: true
   )
 end
 
-nginx_site '03-some-handy-defaults' do
+template '/tmp/03-some-handy-defaults' do
   cookbook 'nginx'
-  template 'some-handy-defaults.conf.erb'
+  source 'some-handy-defaults.conf.erb'
 end

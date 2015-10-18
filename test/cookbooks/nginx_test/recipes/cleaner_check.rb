@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: nginx_test
-# Recipe:: default
+# Recipe:: cleaner_check
 #
 # Copyright (C) 2015 Kirill Kouznetsov
 #
@@ -17,8 +17,23 @@
 # limitations under the License.
 #
 
-nginx_site 'frontend'
+file '/etc/nginx/sites-available/20-hahaha.conf' do
+  owner 'root'
+  group 'root'
+  mode '0644'
+  content <<-EOF
+# This file should be absent!!!
 
-nginx_mainconfig do
-  server_names_hash_bucket_size 64
+server {
+  listen 127.0.0.1:8080;
+  server_name _;
+  root /var/www/;
+  index index.html;
+  charset utf-8;
+}
+EOF
+end
+
+link '/etc/nginx/sites-enabled/20-hahaha.conf' do
+  to '/etc/nginx/sites-available/20-hahaha.conf'
 end
