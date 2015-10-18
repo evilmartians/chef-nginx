@@ -124,7 +124,8 @@ rescue Chef::Exceptions::ResourceNotFound
     notifies :reload, resources(service: 'nginx'), :delayed
   end
 
-  ruby 'dummy delay for nginx_cleanup' do
+  bash 'dummy delay for nginx_cleanup' do
+    code 'true'
     notifies :run, "nginx_cleanup[#{node['nginx']['directories']['conf_dir']}/sites-enabled/]", :delayed
   end
 
