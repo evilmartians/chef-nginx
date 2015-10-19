@@ -35,6 +35,10 @@ events {
   <% end -%>
 }
 
+<% if ! @options['mainconfig_include'].nil? -%>
+include <%= @mainconfig_include_file %>;
+<% end -%>
+
 http {
   include       <%= @options['conf_dir'] %>/mime.types;
   default_type  application/octet-stream;
