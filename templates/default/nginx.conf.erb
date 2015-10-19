@@ -36,7 +36,7 @@ events {
 }
 
 <% if ! @options['mainconfig_include'].nil? -%>
-include <%= @mainconfig_include_file %>;
+include <%= @options['mainconfig_include'] %>;
 <% end -%>
 
 http {
