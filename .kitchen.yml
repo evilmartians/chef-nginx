@@ -1,0 +1,30 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+  data_path: ./test/shared/
+
+platforms:
+  - name: ubuntu-12.04
+  - name: ubuntu-14.04
+
+suites:
+  - name: default
+    run_list:
+      - recipe[apt]
+      - recipe[nginx]
+      - recipe[nginx_test::cleaner_check]
+      - recipe[nginx_test]
+      - recipe[nginx_test::logrotation]
+  - name: official_repo
+    run_list:
+      - recipe[apt]
+      - recipe[nginx::official-repo]
+      - recipe[nginx]
+  - name: helper_templates
+    run_list:
+      - recipe[apt]
+      - recipe[nginx]
+      - recipe[nginx_test::helper_templates]
