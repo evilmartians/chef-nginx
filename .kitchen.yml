@@ -18,13 +18,10 @@ suites:
       - recipe[nginx_test::cleaner_check]
       - recipe[nginx_test]
       - recipe[nginx_test::logrotation]
-  - name: official_repo
+      - recipe[nginx_test::helper_templates]
+  - name: streams
     run_list:
       - recipe[apt]
       - recipe[nginx::official-repo]
       - recipe[nginx]
-  - name: helper_templates
-    run_list:
-      - recipe[apt]
-      - recipe[nginx]
-      - recipe[nginx_test::helper_templates]
+      - recipe[nginx_test::streams]
