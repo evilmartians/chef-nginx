@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: nginx_test
-# Recipe:: cleaner_check
+# Recipe:: stream
 #
 # Copyright (C) 2015 Kirill Kouznetsov
 #
@@ -17,32 +17,5 @@
 # limitations under the License.
 #
 
-file '/etc/nginx/sites-available/20-hahaha.conf' do
-  owner 'root'
-  group 'root'
-  mode '0644'
-  content <<-EOF
-# This file should be absent!!!
-
-server {
-  listen 0.0.0.0:8080;
-  server_name _;
-  root /var/www/;
-  index index.html;
-  charset utf-8;
-}
-EOF
-end
-
-link '/etc/nginx/sites-enabled/20-hahaha.conf' do
-  to '/etc/nginx/sites-available/20-hahaha.conf'
-end
-
-file '/etc/nginx/streams-enabled/wanked.conf' do
-  owner 'root'
-  group 'root'
-  mode '0644'
-  content <<-EOF
-# Your system has been officially WANKed!!!.
-EOF
-end
+nginx_site 'test01'
+nginx_stream 'test01'

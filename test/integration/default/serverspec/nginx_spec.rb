@@ -32,6 +32,7 @@ describe 'Nginx installation' do
   # Test for 'nginx_mainconfig'
   describe file('/etc/nginx/nginx.conf') do
     its(:content) { should match(/^[ \t]*server_names_hash_bucket_size[ \t]+64;$/) }
+    its(:content) { should_not match(/^[ \t]*stream {$/) }
   end
 end
 
