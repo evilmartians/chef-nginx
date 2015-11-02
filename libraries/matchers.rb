@@ -15,6 +15,22 @@ if defined?(ChefSpec)
     ChefSpec::Matchers::ResourceMatcher.new(:nginx_site, :disable, resource_name)
   end
 
+  def add_nginx_stream(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:nginx_stream, :create, resource_name)
+  end
+
+  def remove_nginx_stream(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:nginx_stream, :delete, resource_name)
+  end
+
+  def enable_nginx_stream(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:nginx_stream, :enable, resource_name)
+  end
+
+  def disable_nginx_stream(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:nginx_stream, :disable, resource_name)
+  end
+
   def enable_nginx_logrotate_template(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:nginx_logrotate_template, :enable, resource_name)
   end
