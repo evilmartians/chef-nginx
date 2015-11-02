@@ -158,13 +158,112 @@ nginx_site 'forum.example.com' do
   action :enable
   template 'forum-nginx.erb'
   variables(
-    :listen_ip => '10.0.0.10',
-    :remote_ips => [ '10.0.0.2', '10.0.0.4' ]
+    listen_ip: '10.0.0.10',
+    remote_ips: [ '10.0.0.2', '10.0.0.4' ]
   )
 end
 
 # Making sure that old site's configuration is disabled even if somebody has enabled it by hands.
 nginx_site 'old.example.com' do
+  action :disable
+end
+```
+
+### nginx\_stream
+
+Resource is completle similar to `nginx_site` except it is made to manage stream section includes.
+
+#### Actions
+
+<table>
+  <thead>
+    <tr>
+      <th>Action</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>create</td>
+      <td>
+        Creates site configuration file inside "streams-available" directory, but doesn't enable it.
+      </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>enable</td>
+      <td>
+        Creates site configuration file inside "streams-available" directory, enables it (puts a symlink to it into "streams-enabled" directory)
+      </td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+     <td>disable</td>
+      <td>
+        Ensures that site configuration file is disabled.
+      </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>delete</td>
+      <td>
+        Disables and deletes site configuration file.
+      </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+#### Attributes
+
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Default Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>name</td>
+      <td><b>Name attribute:</b> the name of the stream's configuration file.</td>
+      <td><code>nil</code></td>
+    </tr>
+    <tr>
+      <td>template</td>
+      <td>Defines what erb template file from the cookbook that invokes this resource we should use.</td>
+      <td><code>name</code>.conf.erb</td>
+    </tr>
+    <tr>
+      <td>variables</td>
+      <td>Variables to be used in the template.</td>
+      <td><code>Hash.new</code></td>
+    </tr>
+  </tbody>
+</table>
+
+#### Examples
+
+
+
+```ruby
+# We want to use "example.com.conf.erb" template file, do not want to pass any variables.
+nginx_stream 'stream-01'
+
+# Using custom-named template file and passing some variables, which can be used inside the template.
+nginx_stream 'tcp-stream' do
+  action :enable
+  template 'nginx-stream.erb'
+  variables(
+    listen_ip: '10.0.0.10',
+    remote_ips: '10.0.0.2'
+  )
+end
+
+# Making sure that old site's configuration is disabled even if somebody has enabled it by hands.
+nginx_site 'old-stream' do
   action :disable
 end
 ```
@@ -436,6 +535,10 @@ The resource that is used by `nginx_logrotate` definition and default recipe of 
 It finds all enabled Nginx site's configuration symlinks (or files if somebody was was too lazy or inattentive :) ) that aren't created using `nginx_site` and deletes them. If you do not want this to happen use `nginx_disable_cleanup` definition described above.
 
 This resource is invoked from default recipe of this cookbook and is made to be invoked only once.
+
+## Sponsor
+
+[![Sponsored by Evil Martians](https://evilmartians.com/badges/sponsored-by-evil-martians@2x.png)](https://evilmartians.com)
 
 # License and Author
 

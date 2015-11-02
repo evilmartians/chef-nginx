@@ -1,5 +1,10 @@
 # nginx cookbook CHANGELOG
 
+## 2.3.0 (2015-11-03)
+
+* New resource `nginx_streams`. Which uses the same provider as `nginx_sites` but manages `streams-available` & `streams-enabled` directories.
+* Provider `Chef::Provider::NginxSites` refactored to support logic for previously mentioned change.
+
 ## 2.2.7 (2015-06-07)
 
 * Bugfix: Making sure Nginx process is not stalled after initial installation.
