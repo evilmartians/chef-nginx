@@ -53,7 +53,7 @@ rescue Chef::Exceptions::ResourceNotFound
     end
   end
 
-  %w(sites-available sites-enabled conf.d).each do |dir|
+  %w(sites-available sites-enabled streams-available streams-enabled conf.d).each do |dir|
     directory dir do
       path "#{node['nginx']['directories']['conf_dir']}/#{dir}/"
       owner 'root'
@@ -93,11 +93,12 @@ rescue Chef::Exceptions::ResourceNotFound
   template 'Nginx main configuration file' do
     path "#{node['nginx']['directories']['conf_dir']}/nginx.conf"
     source 'nginx.conf.erb'
-    action :create
+    action :nothing
     owner 'root'
     group 'root'
     variables(
       options: Mash.new(
+        'stream_section'       => false,
         'user'                 => node['nginx']['user'],
         'worker_processes'     => node['nginx']['worker_processes'],
         'error_log'            => ::File.join(node['nginx']['directories']['log_dir'], 'error.log'),
@@ -119,14 +120,21 @@ rescue Chef::Exceptions::ResourceNotFound
     notifies :reload, resources(service: 'nginx'), :delayed
   end
 
-  nginx_cleanup "#{node['nginx']['directories']['conf_dir']}/sites-enabled/" do
+  nginx_cleanup "#{node['nginx']['directories']['conf_dir']}" do
     action :nothing
     notifies :reload, resources(service: 'nginx'), :delayed
   end
 
-  bash 'dummy delay for nginx_cleanup' do
+  bash 'dummy delay for nginx_cleanup and nginx main config template' do
     code 'true'
-    notifies :run, "nginx_cleanup[#{node['nginx']['directories']['conf_dir']}/sites-enabled/]", :delayed
+
+    # We want cleanup to happen after all resource invokations from recipes.
+    notifies :run, "nginx_cleanup[#{node['nginx']['directories']['conf_dir']}]", :delayed
+
+    # We modify options using resource search from inside NginxSite provider.
+    # But template resource from outside provider is already finished its action.
+    # So we have to set action to :nothing and trigger template creation later.
+    notifies :create, 'template[Nginx main configuration file]', :delayed
   end
 
   nginx_logrotate_template 'nginx' do
