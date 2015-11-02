@@ -1,10 +1,10 @@
 #
 # Cookbook Name:: nginx
-# Resource:: site_untracked
+# Resource:: stream
 #
 # Author:: Kirill Kouznetsov
 #
-# Copyright 2013, Kirill Kouznetsov.
+# Copyright 2015, Kirill Kouznetsov.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +27,6 @@ attribute :name, name_attribute: true, kind_of: String
 attribute :template, kind_of: String
 attribute :variables, kind_of: Hash, default: {}
 attribute :cookbook, kind_of: String
-attribute :prefix, kind_of: String, default: 'sites'
+attribute :prefix, kind_of: String, default: 'streams'
 
 # vim: ts=2 sts=2 sw=2 sta et

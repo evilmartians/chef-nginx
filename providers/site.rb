@@ -19,22 +19,24 @@
 # limitations under the License.
 #
 
+provides :nginx_stream
+
 def initialize(new_resource, run_context)
   super(new_resource, run_context)
 
-  @site_config = "#{node['nginx']['directories']['conf_dir']}/sites-available/#{new_resource.name}.conf"
-  @symlink = "#{node['nginx']['directories']['conf_dir']}/sites-enabled/#{new_resource.name}.conf"
+  @config = "#{node['nginx']['directories']['conf_dir']}/#{new_resource.prefix}-available/#{new_resource.name}.conf"
+  @symlink = "#{node['nginx']['directories']['conf_dir']}/#{new_resource.prefix}-enabled/#{new_resource.name}.conf"
 end
 
 action :create do
-  Chef::Log.info("Creating #{new_resource} config.") unless ::File.exist? @site_config
+  Chef::Log.info("Creating #{new_resource} config.") unless ::File.exist? @config
 
   template_file = (new_resource.template.nil? || new_resource.template.empty?) ? "#{new_resource.name}.conf.erb" : new_resource.template
 
-  site_template = nil
+  config_template = nil
 
   if ::File.symlink? @symlink
-    site_template = template @site_config do
+    config_template = template @config do
       action :create
       mode '0644'
       owner 'root'
@@ -45,7 +47,7 @@ action :create do
       notifies :reload, resources(service: 'nginx'), :delayed
     end
   else
-    site_template = template @site_config do
+    config_template = template @config do
       action :create
       mode '0644'
       owner 'root'
@@ -56,7 +58,7 @@ action :create do
     end
   end
 
-  if site_template.updated_by_last_action?
+  if config_template.updated_by_last_action?
     new_resource.updated_by_last_action(true)
   end
 
@@ -67,9 +69,14 @@ action :enable do
 
   action_create
 
-  link_to = @site_config
+  if new_resource.resource_name == :nginx_stream
+    nginx_main_config_template = run_context.resource_collection.find(template: 'Nginx main configuration file')
+    nginx_main_config_template.variables[:options]['stream_section'] = true
+  end
 
-  site_link = link @symlink do
+  link_to = @config
+
+  link_to_config = link @symlink do
     action :create
     to link_to
     owner 'root'
@@ -77,31 +84,31 @@ action :enable do
     notifies :reload, resources(service: 'nginx'), :delayed
   end
 
-  new_resource.updated_by_last_action(site_link.updated_by_last_action?)
+  new_resource.updated_by_last_action(link_to_config.updated_by_last_action?)
 end
 
 action :disable do
   if ::File.symlink? @symlink
     Chef::Log.info("Disabling #{new_resource} config.")
 
-    site_link = link @symlink do
+    link_to_config = link @symlink do
       action :delete
       notifies :reload, resources(service: 'nginx'), :delayed
     end
 
-    if site_link.updated_by_last_action?
+    if link_to_config.updated_by_last_action?
       new_resource.updated_by_last_action(true)
     end
   end
 end
 
 action :delete do
-  if ::File.exist? @site_config
+  if ::File.exist? @config
     Chef::Log.info("Deleting #{new_resource} config.")
 
     action_disable
 
-    site_file = file @site_config do
+    site_file = file @config do
       action :delete
     end
 
