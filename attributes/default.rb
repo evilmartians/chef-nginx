@@ -25,5 +25,6 @@ default['nginx']['user']                    = 'www-data'
 default['nginx']['worker_processes']        = node['cpu']['total']
 default['nginx']['worker_connections']      = 8192
 default['nginx']['worker_rlimit_nofile']    = 8192
+default['nginx']['mainconfig_include']      = nil
 
 # vim: ts=2 sts=2 sw=2 sta et
