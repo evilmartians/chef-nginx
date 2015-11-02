@@ -22,18 +22,24 @@
 action :run do
   Chef::Log.info("#{new_resource} Disabling up unmanaged Nginx configurations")
 
-  file_list = ::Dir.glob(::File.join(new_resource.path, '*'))
+  kill_them_with_fire = []
 
-  protected_resources = run_context.resource_collection.all_resources.select do |resource|
-    resource.resource_name == "#{new_resource.cookbook_name}_site".to_sym
+  %w(site stream).each do |section|
+
+    path = ::File.join(new_resource.path, "#{section}s-enabled", '*')
+    file_list = ::Dir.glob(path)
+
+    protected_resources = run_context.resource_collection.all_resources.select do |resource|
+      resource.resource_name == "#{new_resource.cookbook_name}_#{section}".to_sym
+    end
+
+    protected_files = protected_resources.map do |resource|
+      ::File.join(new_resource.path, "#{section}s-enabled", "#{resource.name}.conf")
+    end
+
+    # Many many thanks to @whitequark for answering my dump questions about ruby!
+    kill_them_with_fire += file_list - protected_files
   end
-
-  protected_files = protected_resources.map do |resource|
-    ::File.join(new_resource.path, "#{resource.name}.conf")
-  end
-
-  # Many many thanks to @whitequark for answering my dump questions about ruby!
-  kill_them_with_fire = file_list - protected_files
 
   kill_them_with_fire.each do |file|
     Chef::Log.info("Nginx configuration '#{file}' is not managed by Chef. Disabling it.")
