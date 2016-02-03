@@ -1,5 +1,9 @@
 # nginx cookbook CHANGELOG
 
+## 2.3.0 (2016-02-03)
+
+* Returned some back compatibility with Chef 11. As it was broken by me in previous release.
+
 ## 2.3.0 (2015-11-03)
 
 * New resource `nginx_streams`. Which uses the same provider as `nginx_sites` but manages `streams-available` & `streams-enabled` directories.
