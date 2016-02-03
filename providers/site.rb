@@ -19,8 +19,6 @@
 # limitations under the License.
 #
 
-provides :nginx_stream
-
 def initialize(new_resource, run_context)
   super(new_resource, run_context)
 

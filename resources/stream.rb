@@ -19,6 +19,11 @@
 # limitations under the License.
 #
 
+def initialize(name, run_context = nil)
+  super
+  @provider = Chef::Provider::NginxSite
+end
+
 actions :create, :enable, :disable, :delete
 
 default_action :enable
