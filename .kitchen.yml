@@ -5,10 +5,12 @@ driver:
 provisioner:
   name: chef_zero
   data_path: ./test/shared/
+#  require_chef_omnibus: 11.18.12
 
 platforms:
   - name: ubuntu-12.04
   - name: ubuntu-14.04
+  - name: debian-7.8
 
 suites:
   - name: default
