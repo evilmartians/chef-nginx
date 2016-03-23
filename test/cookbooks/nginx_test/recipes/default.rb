@@ -29,3 +29,4 @@ end
 nginx_mainconfig do
   server_names_hash_bucket_size 64
 end
+
