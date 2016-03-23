@@ -19,7 +19,11 @@
 
 nginx_site 'frontend'
 
-file '/etc/nginx/custom.conf' do
+template '/etc/nginx/mainconfig_custom_include.conf' do
+  owner 'root'
+  group 'root'
+  mode '0644'
+  source 'test01.conf.erb'
 end
 
 nginx_mainconfig do

@@ -16,7 +16,7 @@ suites:
   - name: default
     attributes:
       nginx:
-        mainconfig_include: "/etc/nginx/custom.conf"
+        mainconfig_include: "/etc/nginx/mainconfig_custom_include.conf"
     run_list:
       - recipe[apt]
       - recipe[nginx]
