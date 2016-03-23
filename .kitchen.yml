@@ -14,6 +14,9 @@ platforms:
 
 suites:
   - name: default
+    attributes:
+      nginx:
+        mainconfig_include: "/etc/nginx/custom.conf"
     run_list:
       - recipe[apt]
       - recipe[nginx]

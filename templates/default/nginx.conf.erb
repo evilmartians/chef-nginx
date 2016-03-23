@@ -62,3 +62,7 @@ stream {
   include <%= @options['conf_dir'] %>/streams-enabled/*;
 }
 <% end -%>
+
+<% if ! @options['mainconfig_include'].nil? -%>
+include <%= @options['mainconfig_include'] %>;
+<% end -%>
