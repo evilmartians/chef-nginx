@@ -8,6 +8,16 @@ describe 'Nginx installation' do
     it { should be_listening.on('127.0.0.1') }
   end
 
+  describe file('/etc/nginx/mainconfig_custom_include.conf') do
+    it { should be_file }
+    it { should be_readable }
+    it { should be_owned_by 'root' }
+  end
+
+  describe file('/etc/nginx/nginx.conf') do
+    its(:content) { should match(%r{^include /etc/nginx/mainconfig_custom_include\.conf;$}) }
+  end
+
   describe file('/etc/nginx/sites-available/frontend.conf') do
     it { should be_file }
     it { should be_readable }
