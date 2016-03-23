@@ -56,13 +56,14 @@ http {
   include <%= @options['conf_dir'] %>/conf.d/*.conf;
   include <%= @options['conf_dir'] %>/sites-enabled/*;
 }
-
 <% if @options['stream_section'] -%>
+
 stream {
   include <%= @options['conf_dir'] %>/streams-enabled/*;
 }
 <% end -%>
-
 <% if ! @options['mainconfig_include'].nil? -%>
-include <%= @options['mainconfig_include'] %>;
+
+    include <%= @options['mainconfig_include'] %>;
 <% end -%>
+
