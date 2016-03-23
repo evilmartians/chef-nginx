@@ -19,6 +19,9 @@
 
 nginx_site 'frontend'
 
+file '/etc/nginx/custom.conf' do
+end
+
 nginx_mainconfig do
   server_names_hash_bucket_size 64
 end
