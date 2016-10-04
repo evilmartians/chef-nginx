@@ -1,6 +1,16 @@
 # nginx cookbook CHANGELOG
 
-## 2.3.0 (2016-02-03)
+## 2.3.3 (2016-10-04)
+
+* Descent DH params file is generated after nginx package installation.
+
+## 2.3.2 (2016-)
+
+* Test Kitchen: Debian 7 was added to the test suite.
+* `mainconfig_include_file` option was added.
+* Now using correct dummy template for config file for custom includes to main nginx config.
+
+## 2.3.1 (2016-02-03)
 
 * Returned some back compatibility with Chef 11. As it was broken by me in previous release.
 
