@@ -90,6 +90,13 @@ rescue Chef::Exceptions::ResourceNotFound
     action [:enable, :start]
   end
 
+  execute 'Generate descent DH param file.' do
+    command "openssl dhparam -out #{node['nginx']['directories']['conf_dir']}/dhparams.pem #{node['nginx']['dhparam']['size']}"
+    creates "#{node['nginx']['directories']['conf_dir']}/dhparams.pem"
+    action :run
+    notifies :reload, resources(service: 'nginx'), :delayed
+  end
+
   template 'Nginx main configuration file' do
     path "#{node['nginx']['directories']['conf_dir']}/nginx.conf"
     source 'nginx.conf.erb'
