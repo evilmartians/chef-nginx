@@ -19,8 +19,8 @@ env <%= @options['env'] %>;
 <% if @options.has_key?('load_module') -%>
 
 <% if @options['load_module'].is_a?(Array) -%>
-<% @options['load_module'].each do |module| -%>
-load_module <%= module %>;
+<% @options['load_module'].each do |mod| -%>
+load_module <%= mod %>;
 <% end -%>
 <% else -%>
 load_module <%= @options['load_module'] %>;
