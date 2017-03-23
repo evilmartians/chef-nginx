@@ -1,5 +1,9 @@
 # nginx cookbook CHANGELOG
 
+## 2.3.5 (2017-03-24)
+
+* nginx.conf template should accept `load_module` option.
+
 ## 2.3.4 (2016-11-02)
 
 * DH param file was renames to the expected one.
