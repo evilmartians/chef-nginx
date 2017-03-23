@@ -16,6 +16,16 @@ env <%= env_var %>;
 env <%= @options['env'] %>;
 <% end -%>
 <% end -%>
+<% if @options.has_key?('load_module') -%>
+
+<% if @options['load_module'].is_a?(Array) -%>
+<% @options['load_module'].each do |module| -%>
+load_module <%= module %>;
+<% end -%>
+<% else -%>
+load_module <%= @options['load_module'] %>;
+<% end -%>
+<% end -%>
 
 events {
   <% %w{accept_mutex accept_mutex_delay multi_accept use worker_aio_requests worker_connections}.each do |opt| -%>
