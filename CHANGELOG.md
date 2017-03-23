@@ -1,5 +1,9 @@
 # nginx cookbook CHANGELOG
 
+## 2.3.4 (2016-11-02)
+
+* DH param file was renames to the expected one.
+
 ## 2.3.3 (2016-10-04)
 
 * Descent DH params file is generated after nginx package installation.
