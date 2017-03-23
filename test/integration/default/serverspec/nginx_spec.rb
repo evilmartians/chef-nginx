@@ -44,6 +44,12 @@ describe 'Nginx installation' do
     its(:content) { should match(/^[ \t]*server_names_hash_bucket_size[ \t]+64;$/) }
     its(:content) { should_not match(/^[ \t]*stream {$/) }
   end
+
+  # dhparam file generation
+  describe file('/etc/nginx/dhparam.pem') do
+    it { should be_readable }
+    it { should be_owned_by 'root' }
+  end
 end
 
 private
