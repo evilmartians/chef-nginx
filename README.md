@@ -14,7 +14,7 @@ At the moment this cookbook doesn't depend on other cookbooks but it will change
 
 ## Platform
 
-The cookbook has been tested to work on `Ubuntu 12.04`, `Ubuntu 14.04` and `Debian 7`
+The cookbook has been tested to work on `Ubuntu 12.04`, `Ubuntu 14.04` , `Ubuntu 16.04` and `Debian 7`
 
 I suppose it should also work for CenOS/RHEL but no tests have been conducted yet. I have some certain plans for porting and testing this cookbook on the mentioned platforms after I finish its main funcionality.
 
