@@ -32,13 +32,11 @@ rescue Chef::Exceptions::ResourceNotFound
   execute 'kill nginx after installation' do
     command '/usr/bin/pkill nginx'
     action :nothing
-    notifies :start, 'service[nginx]'
+    notifies :restart, 'service[nginx]', :immediately
   end
 
   package 'nginx' do
-    if node['platform_version'].to_f < 16.04
-      notifies :run, 'execute[kill nginx after installation]'
-    end
+      notifies :run, 'execute[kill nginx after installation]',:delayed
   end
 
   directory node['nginx']['directories']['log_dir'] do
