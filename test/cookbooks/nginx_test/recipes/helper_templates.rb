@@ -18,32 +18,32 @@
 #
 
 nginx_site '00-gzip-defaults' do
-  cookbook 'nginx'
+  cookbook 'nginx_lwrp'
   template 'gzip.conf.erb'
 end
 
 template '/tmp/01-some-handy-defaults' do
-  cookbook 'nginx'
+  cookbook 'nginx_lwrp'
   source 'some-handy-defaults.conf.erb'
   variables(
     sendfile: false,
     tcp_nopush: 'on',
     tcp_nodelay: true,
     server_tokens: 'off',
-    keepalive_timeout: false
+    keepalive_timeout: false,
   )
 end
 
 template '/tmp/02-some-handy-defaults' do
-  cookbook 'nginx'
+  cookbook 'nginx_lwrp'
   source 'some-handy-defaults.conf.erb'
   variables(
     server_tokens: 'on',
-    reset_timedout_connection: true
+    reset_timedout_connection: true,
   )
 end
 
 template '/tmp/03-some-handy-defaults' do
-  cookbook 'nginx'
+  cookbook 'nginx_lwrp'
   source 'some-handy-defaults.conf.erb'
 end

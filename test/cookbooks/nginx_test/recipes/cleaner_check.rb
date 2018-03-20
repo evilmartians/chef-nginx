@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+# rubocop:disable Layout/IndentHeredoc
+# rubocop:disable Naming/HeredocDelimiterNaming
 file '/etc/nginx/sites-available/20-hahaha.conf' do
   owner 'root'
   group 'root'
@@ -46,3 +48,5 @@ file '/etc/nginx/streams-enabled/wanked.conf' do
 # Your system has been officially WANKed!!!.
 EOF
 end
+# rubocop:enable Layout/IndentHeredoc
+# rubocop:enable Naming/HeredocDelimiterNaming

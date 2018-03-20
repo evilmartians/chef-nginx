@@ -1,4 +1,24 @@
-# nginx cookbook CHANGELOG
+# nginx_lwrp cookbook CHANGELOG
+
+## 3.0.0 (2018-03-20)
+
+* [Breaking change] **Chef 12 is not supported anymore**, see below for comments.
+* [Breaking change] no more `nginx_disable_cleanup` definition
+* [Breaking change] no more `nginx_logrotate` definition
+* Chef 13 support
+* cookbook name was changed to `nginx_lwrp` to add this cookbook to Supermarket.
+* new list of supported OSes:
+  * Ubuntu 14.04
+  * Ubuntu 16.04
+  * Debian 8
+  * Debian 9
+* LWRPs were rewritten using [new style](https://docs.chef.io/custom_resources.html)
+* Inspec is used instead of ServerSpec now
+* Gemfile update
+* Rubocop offences were fixed
+* Foodcritic offences were fixed
+
+Please be warned!!! Сhef 12 is reaching its EOL in April 2018 and will be removed from [downloads.chef.io](https://downloads.chef.io) so it doesn't make sense to continue its support, so I'm dropping Chef 12 support starting from version 3.0.0 of this cookbook in favor of Chef 13 support. 
 
 ## 2.3.5 (2017-03-24)
 

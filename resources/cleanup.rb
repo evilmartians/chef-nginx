@@ -4,7 +4,7 @@
 #
 # Author:: Kirill Kouznetsov
 #
-# Copyright 2012, Kirill Kouznetsov.
+# Copyright 2018, Kirill Kouznetsov.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,10 +19,41 @@
 # limitations under the License.
 #
 
-actions :run, :disable
+resource_name :nginx_cleanup
 
 default_action :run
 
-attribute :path, kind_of: String, name_attribute: true
+property :path, kind_of: String, name_attribute: true
 
-# vim: ts=2 sts=2 sw=2 sta et
+action :run do
+  valid_files = list_defined_resources(path, run_context.parent_run_context)
+  file_list = ::Dir.glob(::File.join(path, '*-enabled', '*'))
+
+  kill_them_with_fire = file_list - valid_files
+
+  kill_them_with_fire.each do |file|
+    Chef::Log.info(
+      "Nginx configuration '#{file}' is not managed by Chef. Disabling it.",
+    )
+    ::File.unlink file
+  end
+end
+
+private
+
+action_class.class_eval do
+  private
+
+  def list_defined_resources(path, run_context)
+    res_list = run_context.resource_collection.all_resources.select do |res|
+      res.resource_name == :nginx_lwrp_site_and_stream
+    end
+    res_list.map do |res|
+      ::File.join(
+        path,
+        "#{res.declared_type.to_s.split('_')[1]}s-enabled",
+        "#{res.name}.conf",
+      )
+    end
+  end
+end

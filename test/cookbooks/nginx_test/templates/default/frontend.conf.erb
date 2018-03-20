@@ -8,8 +8,8 @@ server {
   index index.html;
   charset utf-8;
 
-  access_log <%= node['nginx']['directories']['log_dir'] %>/frontend.access.log detailed;
-  error_log <%= node['nginx']['directories']['log_dir'] %>/frontend.error.log;
+  access_log <%= node['nginx']['config']['log_dir'] %>/frontend.access.log detailed;
+  error_log <%= node['nginx']['config']['log_dir'] %>/frontend.error.log;
 
   location /nya {
     add_header Neko nya;

@@ -2,36 +2,37 @@
 
 Installs Nginx from package, sets up some default configuration and defines LWRP supposed to be used inside your own cookbooks, which you use to manage your infrastructure.
 
-# Sponsor
-
-Sponsored by [Evil Martians](http://evilmartians.com)
-
 # Requirements
 
 ## Cookbooks
 
-At the moment this cookbook doesn't depend on other cookbooks but it will change in the future.
+At the moment this cookbook doesn't depend on other cookbooks but it may change in the future.
 
 ## Platform
 
-The cookbook has been tested to work on `Ubuntu 12.04`, `Ubuntu 14.04` and `Debian 7`
+The cookbook has been tested to work on `Ubuntu 14.04`, `Ubuntu 16.04`, `Debian 8` and `Debian 9`
 
-I suppose it should also work for CenOS/RHEL but no tests have been conducted yet. I have some certain plans for porting and testing this cookbook on the mentioned platforms after I finish its main funcionality.
+I suppose it should also work for CenOS/RHEL but no tests have been conducted yet.
 
 ## Chef version
 
-Chef version >= `11.18.12` has to be used.
+Chef version >= `13` has to be used.
+
+> Сhef 12 is reaching its EOL in April 2018 and will be removed from [downloads.chef.io](https://downloads.chef.io) so it doesn't make sense to continue its support, so I'm dropping Chef 12 support starting from version 3.0.0 of this cookbook in favor of Chef 13.
 
 ## Attributes
 
 Defaults that are used to configure nginx. If you want to change one of this parameters in nginx consider using provided LWRP and definitions.
 
-* `node['nginx']['directories']['conf_dir']` - Base nginx config directory. Default `/etc/nginx`.
-* `node['nginx']['directories']['log_dir']` - Directory for nginx log files. Default `/var/log/nginx`.
-* `node['nginx']['user']` - Default user that nginx will use to run worker processes. Default: `www-data`.
-* `node['nginx']['worker_processes']` - Number of nginx workers. Default `cpu['total']`.
-* `node['nginx']['worker_connections'] - Number of simultaneous connections that one worker can serve. Default `8192`.
-* `node['nginx']['worker_rlimit_nofile']` - Specifies the value for maximum file descriptors that can be opened by one worker process. Default `8192`.
+* `node['nginx']['config']['conf_dir']` - Base nginx config directory. Default `/etc/nginx`.
+* `node['nginx']['config']['log_dir']` - Directory for nginx log files. Default `/var/log/nginx`.
+* `node['nginx']['config']['user']` - Default user that nginx will use to run worker processes. Default: `www-data`.
+* `node['nginx']['config']['worker_processes']` - Number of nginx workers. Default `cpu['total']`.
+* `node['nginx']['config']['worker_connections'] - Number of simultaneous connections that one worker can serve. Default `8192`.
+* `node['nginx']['config']['worker_rlimit_nofile']` - Specifies the value for maximum file descriptors that can be opened by one worker process. Default `8192`.
+* `node['nginx']['config']['pid']` - Path to Nginx pid file. Default: `/var/run/nginx.pid`
+* `node['nginx']['config']['mainconfig_include']` - Include files into the main context of nginx.conf. Default: `nil`
+* `node['nginx']['config']['error_log']` - Path to a default error log file. Default: `/var/log/nginx/error.log`
 
 
 # Recipes
@@ -54,19 +55,19 @@ This default recipe will make some basic steps:
 ## Wrapper-cookbook way
 
 This cookbook has been designed to provide **LWRP** for your own infrastructure recipes. First of all, we should make our infrastructure cookbook to load this one.
-* Do it by adding the line `depends nginx` to your cookbook's metadata.rb.
-* To make all default preparations for using Nginx invoke `include_recipe "nginx"` inside your designated recipe.
+* Do it by adding the line `depends nginx_lwrp` to your cookbook's metadata.rb.
+* To make all default preparations for using Nginx invoke `include_recipe "nginx_lwrp"` inside your designated recipe.
 * Now feel free to use all available LWRP provided by this cookbook.
 
 ## Roles-based way
 
-Another way to use this cookbook is just to add `recipe[nginx]` to your **run_list** before your recipe, which is resonsible for your infrastructure.
+Another way to use this cookbook is just to add `recipe[nginx_lwrp]` to your **run_list** before your recipe, which is resonsible for your infrastructure.
 
 I personally prefer the first way because if you stick to it you'll eventually get complete and explicit "documentation" for your specific server installation. But in any case, you'll get Nginx installed, nginx.conf configured from the default template we provide, **LWRP** defined and ready to use.
 
 ## Official Nginx repo or default distro package
 
-If you would like to use nginx package from official nginx repo, then just add `recipe[nginx::official-repo]` or `include_recipe 'nginx::official-repo'` before `nginx` recipe invokation. Other wise default nginx package would be used from distro repository.
+If you would like to use nginx package from official nginx repo, then just add `recipe[nginx_lwrp::official-repo]` or `include_recipe 'nginx_lwrp::official-repo'` before `nginx_lwrp` recipe invokation. Other wise default nginx package would be used from distro repository.
 
 ## LWRP
 
@@ -246,8 +247,6 @@ Resource is completle similar to `nginx_site` except it is made to manage stream
 
 #### Examples
 
-
-
 ```ruby
 # We want to use "example.com.conf.erb" template file, do not want to pass any variables.
 nginx_stream 'stream-01'
@@ -270,7 +269,11 @@ end
 
 ### nginx\_mainconfig
 
-If you want to customize template for Nginx main configuration file, you can use this definition. It will apply passed attributes to the _nginx.conf_. You can only use a fixed number of core arguments that are listed below. All other Nginx arguments are meant to be set via site configurations(or conf.d directory). It can be invoked any number of times and **overwrite previous** changes from previous invocations so be cautious!
+This resource is deprecated right now, use attributes instead.
+
+```ruby
+node.default['nginx']['config']['OPTION'] = 'VALUE'
+```
 
 #### List of allowed attributes
 
@@ -306,34 +309,8 @@ If you want to customize template for Nginx main configuration file, you can use
 There are also attributes that can accept either a string or an array of strings:
 
 * [env](http://nginx.org/en/docs/ngx_core_module.html#env)
+* [load_module](http://nginx.org/en/docs/ngx_core_module.html#load_module)
 * [debug_connection](http://nginx.org/en/docs/ngx_core_module.html#debug_connection)
-
-#### Examples
-
-```ruby
-nginx_mainconfig do
-  error_log '/var/log/nginx/new-error.log'
-  pid '/var/run/nginx/nginx.pid'
-
-  env [
-      'MALLOC_OPTIONS',
-      'PERL5LIB=/data/site/modules',
-      'OPENSSL_ALLOW_PROXY_CERTS=1'
-    ]
-
-  debug_connection [
-    '127.0.0.1',
-    'localhost',
-    '192.0.2.0/24'
-  ]
-end
-
-# Another example for env and debug_connection
-nginx_mainconfig do
-  env 'MALLOC_OPTIONS'
-  debug_connection '127.0.0.1'
-end
-```
 
 ## Small handy templates
 
@@ -359,13 +336,13 @@ How to use:
 ```ruby
 # Use its default parameters.
 nginx_site '00-gzip' do
-  cookbook 'nginx'
+  cookbook 'nginx_lwrp'
   template 'gzip.conf.erb'
 end
 
 # Or you can fine tune it.
 nginx_site '01-gzip' do
-  cookbook 'nginx'
+  cookbook 'nginx_lwrp'
   template 'gzip.conf.erb'
   variables(
     enabled: true,
@@ -397,13 +374,13 @@ How to use:
 ```ruby
 # Use its default parameters.
 nginx_site '02-some-handy-defaults' do
-  cookbook 'nginx'
+  cookbook 'nginx_lwrp'
   template 'some-handy-defaults.conf.erb'
 end
 
 # Or you can fine tune it.
 nginx_site '03-some-handy-defaults' do
-  cookbook 'nginx'
+  cookbook 'nginx_lwrp'
   template 'some-handy-defaults.conf.erb'
   variables(
     sendfile: 'on',
@@ -418,8 +395,13 @@ end
 
 ### nginx\_logrotate
 
-This definition controls default log rotation settings for Nginx. Definition is used here as a wrapper because the name attibute can be omitted this way.
-Log rotation is enabled by default and has following configuration:
+This resource and definition are deprecated right now. There are new attributes for log rotation configuration now: 
+
+```ruby
+node.default['nginx']['logrotate']['OPTION'] = 'VALUE'
+```
+
+Default logrotate configuration:
 
 ```
 /var/log/nginx/*.log {
@@ -501,40 +483,21 @@ Log rotation is enabled by default and has following configuration:
   </tbody>
 </table>
 
-#### Examples
-
-```ruby
-# Store rotated logs for 30 days and make them readable by everybody
-nginx_logrotate do
-  rotate 30
-  mode '644'
-end
-
-# Or full tuning
-nginx_logrotate do
-  logs ::File.join(node[:infrastucute_name][:logdir], '*.log')
-  how_often 'weekly'
-  rotate 8
-  copytruncate true
-  user 'root'
-  group 'adm'
-  mode '660'
-end
-```
-
 ### nginx\_disable\_cleanup
 
-This definition has no attributes or actions. Its invokation just disables the `nginx_cleanup` resource that is invoked by default.
+This resource is deprecated right now.
 
 ### nginx\_logrotate\_template
 
-The resource that is used by `nginx_logrotate` definition and default recipe of this cookbook and is not meant to be used inside your recipes.
+This resource is deprecated right now.
 
 ### nginx\_cleanup
 
-It finds all enabled Nginx site's configuration symlinks (or files if somebody was was too lazy or inattentive :) ) that aren't created using `nginx_site` and deletes them. If you do not want this to happen use `nginx_disable_cleanup` definition described above.
+This definitions is deprecated right now. Use attribute to disable cleanup:
 
-This resource is invoked from default recipe of this cookbook and is made to be invoked only once.
+```ruby
+node.default['nginx']['enable_cleanup'] = false
+```
 
 ## Sponsor
 
@@ -544,7 +507,7 @@ This resource is invoked from default recipe of this cookbook and is made to be 
 
 Kirill Kouznetsov (agon.smith@gmail.com)
 
-Copyright (C) 2012-2014 Kirill Kouznetsov
+Copyright (C) 2012-2018 Kirill Kouznetsov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

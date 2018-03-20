@@ -1,7 +1,7 @@
-require 'rspec'
-require 'serverspec'
 
-RSpec.shared_examples 'Nginx base configuration' do
+control 'basic nginx tests' do
+  title 'Check basic nginx installation'
+
   describe package('nginx') do
     it { should be_installed }
   end
@@ -15,19 +15,23 @@ RSpec.shared_examples 'Nginx base configuration' do
     it { should be_file }
     it { should be_readable }
     it { should be_owned_by 'root' }
-    its(:content) { should match(/This file is generated and managed by Chef/) }
-    its(:content) { should match(/'- \$connection/) }
-    its(:content) { should match(%r{^[ \t]*include[ \t]+/etc/nginx/mime.types;$}) }
+
+    its('content') { should match(/This file is generated and managed by/) }
+    its('content') { should match(/'- \$connection/) }
+
+    its('content') do
+      should match(%r{^[ \t]*include[ \t]+/etc/nginx/mime.types;$})
+    end
   end
 
   describe file('/etc/nginx/mime.types') do
     it { should be_file }
     it { should be_readable }
     it { should be_owned_by 'root' }
-    its(:content) { should match(/woff2/) }
+    its('content') { should match(/woff2/) }
   end
 
   describe command('/usr/sbin/nginx -tq') do
-    its(:exit_status) { should eq 0 }
+    its('exit_status') { should eq 0 }
   end
 end

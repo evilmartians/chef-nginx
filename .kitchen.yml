@@ -4,29 +4,37 @@ driver:
 
 provisioner:
   name: chef_zero
-  data_path: ./test/shared/
-#  require_chef_omnibus: 11.18.12
+
+verifier:
+  name: inspec
+  inspec_tests:
+  - path: test/integration/default/inspec
 
 platforms:
-  - name: ubuntu-12.04
   - name: ubuntu-14.04
-  - name: debian-7.8
+    driver:
+      box: bento/ubuntu-14.04
+  - name: ubuntu-16.04
+    driver:
+      box: bento/ubuntu-16.04
+  - name: debian-8
+    driver:
+      box: bento/debian-8
+  - name: debian-9
+    driver:
+      box: bento/debian-9
 
 suites:
-  - name: default
+  - name: chef-13
     attributes:
       nginx:
-        mainconfig_include: "/etc/nginx/mainconfig_custom_include.conf"
+        config:
+          mainconfig_include: "/etc/nginx/mainconfig_custom_include.conf"
     run_list:
       - recipe[apt]
-      - recipe[nginx]
+      - recipe[nginx_lwrp::official-repo]
+      - recipe[nginx_lwrp]
       - recipe[nginx_test::cleaner_check]
       - recipe[nginx_test]
-      - recipe[nginx_test::logrotation]
       - recipe[nginx_test::helper_templates]
-  - name: streams
-    run_list:
-      - recipe[apt]
-      - recipe[nginx::official-repo]
-      - recipe[nginx]
       - recipe[nginx_test::streams]

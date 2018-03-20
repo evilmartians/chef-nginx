@@ -19,13 +19,20 @@
 # limitations under the License.
 #
 
-default['nginx']['directories']['conf_dir'] = '/etc/nginx'
-default['nginx']['directories']['log_dir']  = '/var/log/nginx'
-default['nginx']['user']                    = 'www-data'
-default['nginx']['worker_processes']        = node['cpu']['total']
-default['nginx']['worker_connections']      = 8192
-default['nginx']['worker_rlimit_nofile']    = 8192
-default['nginx']['mainconfig_include']      = nil
-default['nginx']['dhparam']['size']         = 2048
+default['nginx']['config']['conf_dir']                = '/etc/nginx'
+default['nginx']['config']['log_dir']                 = '/var/log/nginx'
+default['nginx']['config']['user']                    = 'www-data'
+default['nginx']['config']['worker_processes']        = node['cpu']['total']
+default['nginx']['config']['pid']                     = '/var/run/nginx.pid'
+default['nginx']['config']['worker_connections']      = 8192
+default['nginx']['config']['worker_rlimit_nofile']    = 8192
+default['nginx']['config']['mainconfig_include']      = nil
+
+default['nginx']['config']['error_log'] = ::File.join(
+  node['nginx']['config']['log_dir'],
+  'error.log',
+)
+
+default['nginx']['dhparam']['size'] = 2048
 
 # vim: ts=2 sts=2 sw=2 sta et

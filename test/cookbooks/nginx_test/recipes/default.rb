@@ -17,7 +17,15 @@
 # limitations under the License.
 #
 
-nginx_site 'frontend'
+file 'nginx_site_notification' do
+  path '/tmp/nginx_site_notification.txt'
+  content 'passed'
+  action :nothing
+end
+
+nginx_site 'frontend' do
+  notifies :create, 'file[nginx_site_notification]'
+end
 
 template '/etc/nginx/mainconfig_custom_include.conf' do
   owner 'root'
@@ -25,8 +33,3 @@ template '/etc/nginx/mainconfig_custom_include.conf' do
   mode '0644'
   source 'test01.conf.erb'
 end
-
-nginx_mainconfig do
-  server_names_hash_bucket_size 64
-end
-
