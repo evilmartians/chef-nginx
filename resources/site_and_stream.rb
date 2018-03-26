@@ -25,9 +25,9 @@ provides :nginx_stream
 
 default_action :enable
 
-property :template, kind_of: String
-property :variables, kind_of: Hash, default: {}
-property :cookbook, kind_of: String
+property :template, String
+property :variables, Hash, default: {}
+property :cookbook, String
 
 def to_s
   "#{declared_type}[#{name}]"

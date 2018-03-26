@@ -3,7 +3,7 @@ maintainer        'Kirill Kouznetsov'
 maintainer_email  'agon.smith@gmail.com'
 license           'Apache-2.0'
 description       'Installs and configures nginx'
-version           '3.0.0'
+version           '3.0.1'
 
 depends 'apt'
 

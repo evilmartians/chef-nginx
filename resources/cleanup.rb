@@ -23,7 +23,7 @@ resource_name :nginx_cleanup
 
 default_action :run
 
-property :path, kind_of: String, name_attribute: true
+property :path, String, name_property: true
 
 action :run do
   valid_files = list_defined_resources(path, run_context.parent_run_context)

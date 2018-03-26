@@ -1,5 +1,10 @@
 # nginx_lwrp cookbook CHANGELOG
 
+## 3.0.1 (2018-03-26)
+
+* TESTING.md file added to comply with supermarket validations.
+* Foodcritic FC117 & FC118 fixes.
+
 ## 3.0.0 (2018-03-20)
 
 * [Breaking change] **Chef 12 is not supported anymore**, see below for comments.
