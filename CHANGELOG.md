@@ -1,5 +1,13 @@
 # nginx_lwrp cookbook CHANGELOG
 
+## 3.0.2 (2018-04-04)
+
+* Chef 14 support;
+* Test Kitchen: main tests are switched to Chef 14;
+* Test Kitchen: smoke test for Chef 13 was added;
+* Test Kitchen: second config file to run tests in Docker using TravisCI itself;
+* TravisCI integration & auto-deploy;
+
 ## 3.0.1 (2018-03-26)
 
 * TESTING.md file added to comply with supermarket validations.

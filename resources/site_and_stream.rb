@@ -35,6 +35,7 @@ end
 
 action_class.class_eval do
   def load_current_resource
+    conf_dir = node['nginx']['config']['conf_dir']
     prefix = case new_resource.declared_type
              when :nginx_site
                'sites'
@@ -43,15 +44,15 @@ action_class.class_eval do
              end
 
     @config = ::File.join(
-      node['nginx']['config']['conf_dir'],
+      conf_dir,
       "#{prefix}-available",
-      "#{name}.conf",
+      "#{new_resource.name}.conf",
     )
 
     @symlink = ::File.join(
-      node['nginx']['config']['conf_dir'],
+      conf_dir,
       "#{prefix}-enabled",
-      "#{name}.conf",
+      "#{new_resource.name}.conf",
     )
   end
 end

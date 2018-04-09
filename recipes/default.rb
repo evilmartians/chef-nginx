@@ -36,16 +36,15 @@ begin
   )
   raise Chef::Exceptions::ResourceNotFound if recipe_res_collection.empty?
 rescue Chef::Exceptions::ResourceNotFound
-  execute 'kill nginx after installation' do
-    command '/usr/bin/pkill nginx'
-    action :nothing
-    notifies :start, 'service[nginx]'
-  end
-
   package 'logrotate'
+  package 'nginx'
 
-  package 'nginx' do
-    notifies :run, 'execute[kill nginx after installation]'
+  # We stop nginx right after the installation to make the first configuration.
+  # We will make sure it starts with the dummy delay resource below.
+  service 'nginx' do
+    action :enable if node['platform'] == 'ubuntu' and
+                      node['platform_version'].to_f < 16.04
+    subscribes :stop, 'package[nginx]', :immediately
   end
 
   directory node['nginx']['config']['log_dir'] do
@@ -101,11 +100,6 @@ rescue Chef::Exceptions::ResourceNotFound
     source 'welcome-to-nginx.html'
   end
 
-  service 'nginx' do
-    supports status: true, restart: true, reload: true
-    action %i[enable start]
-  end
-
   dh_param_path = "#{node['nginx']['config']['conf_dir']}/dhparam.pem"
   dh_param_size = node['nginx']['dhparam']['size']
 
@@ -119,11 +113,16 @@ rescue Chef::Exceptions::ResourceNotFound
   template 'Nginx main configuration file' do
     path "#{node['nginx']['config']['conf_dir']}/nginx.conf"
     source 'nginx.conf.erb'
-    action :nothing
     owner 'root'
     group 'root'
     variables(options: Mash.new(node['nginx']['config']))
+
+    # Start nginx if not started and reload otherwise.
+    notifies :start, 'service[nginx]', :delayed
     notifies :reload, 'service[nginx]', :delayed
+
+    # see dummy delay resource below.
+    action :nothing
   end
 
   cookbook_file "#{node['nginx']['config']['conf_dir']}/mime.types" do
@@ -158,7 +157,7 @@ rescue Chef::Exceptions::ResourceNotFound
     )
   end
 
-  bash 'dummy delay for nginx_cleanup and nginx main config template' do
+  bash 'custom delay for some resouces' do
     code 'true'
 
     # We want cleanup to happen after all resource invocations from recipes.
@@ -166,10 +165,8 @@ rescue Chef::Exceptions::ResourceNotFound
              "nginx_cleanup[#{node['nginx']['config']['conf_dir']}]",
              :delayed
 
-    # We modify options using resource search from inside NginxSite provider.
-    # But template resource from outside provider is already finished its
-    # action. So we have to set action to :nothing and trigger template
-    # creation later.
+    # Delaying nginx.conf creation to help nginx_stream resources enable
+    # streams directories includes.
     notifies :create, 'template[Nginx main configuration file]', :delayed
   end
 end

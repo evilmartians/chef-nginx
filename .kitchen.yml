@@ -38,3 +38,23 @@ suites:
       - recipe[nginx_test]
       - recipe[nginx_test::helper_templates]
       - recipe[nginx_test::streams]
+    provisioner:
+      product_name: chef
+      product_version: 13
+    includes:
+      - ubuntu-16.04
+      - ubuntu-14.04
+  - name: chef-14
+    attributes:
+      nginx:
+        config:
+          mainconfig_include: "/etc/nginx/mainconfig_custom_include.conf"
+    run_list:
+      - recipe[apt]
+      - recipe[nginx_lwrp::official-repo]
+      - recipe[nginx_lwrp]
+      - recipe[nginx_test::cleaner_check]
+      - recipe[nginx_test]
+      - recipe[nginx_test::helper_templates]
+      - recipe[nginx_test::streams]
+

@@ -26,8 +26,11 @@ default_action :run
 property :path, String, name_property: true
 
 action :run do
-  valid_files = list_defined_resources(path, run_context.parent_run_context)
-  file_list = ::Dir.glob(::File.join(path, '*-enabled', '*'))
+  valid_files = list_defined_resources(
+    new_resource.path,
+    run_context.parent_run_context,
+  )
+  file_list = ::Dir.glob(::File.join(new_resource.path, '*-enabled', '*'))
 
   kill_them_with_fire = file_list - valid_files
 

@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/evilmartians/chef-nginx.svg?branch=master)](https://travis-ci.org/evilmartians/chef-nginx)
+
 # Description
 
 Installs Nginx from package, sets up some default configuration and defines LWRP supposed to be used inside your own cookbooks, which you use to manage your infrastructure.
