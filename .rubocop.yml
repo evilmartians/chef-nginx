@@ -2,9 +2,11 @@ Metrics/BlockLength:
   Enabled: false
 Metrics/MethodLength:
   Enabled: false
+Naming/FileName:
+  Enabled: false
 Style/AndOr:
   Enabled: false
-Naming/FileName:
+Style/FrozenStringLiteralComment:
   Enabled: false
 Style/MixinUsage:
   Enabled: false
