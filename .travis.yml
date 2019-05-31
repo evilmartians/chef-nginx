@@ -5,7 +5,7 @@ language: ruby
 cache: bundler
 sudo: false
 rvm:
-- 2.5.1
+- 2.6.3
 bundler_args: "--without kitchen-vagrant"
 
 before_install:
@@ -18,6 +18,12 @@ env:
   global:
   - KITCHEN_YAML=.kitchen.docker.yml
   matrix:
+  - INSTANCE=chef-15-ubuntu-1804-docker
+  - INSTANCE=chef-15-ubuntu-1604-docker
+  - INSTANCE=chef-15-ubuntu-1404-docker
+  - INSTANCE=chef-15-debian-9-docker
+  - INSTANCE=chef-15-debian-8-docker
+  - INSTANCE=chef-14-ubuntu-1804-docker
   - INSTANCE=chef-14-ubuntu-1604-docker
   - INSTANCE=chef-14-ubuntu-1404-docker
   - INSTANCE=chef-14-debian-9-docker

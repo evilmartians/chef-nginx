@@ -1,5 +1,11 @@
 # nginx_lwrp cookbook CHANGELOG
 
+## 3.0.3 (2019-05-31)
+
+* Chef 15 support;
+* Ubuntu 18.04 support;
+* Test Kitchen: tests with Chef 15;
+
 ## 3.0.2 (2018-04-04)
 
 * Chef 14 support;

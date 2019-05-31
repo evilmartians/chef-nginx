@@ -4,6 +4,7 @@ driver:
 
 provisioner:
   name: chef_zero
+  chef_license: accept
 
 verifier:
   name: inspec
@@ -17,6 +18,9 @@ platforms:
   - name: ubuntu-16.04
     driver:
       box: bento/ubuntu-16.04
+  - name: ubuntu-18.04
+    driver:
+      box: bento/ubuntu-18.04
   - name: debian-8
     driver:
       box: bento/debian-8
@@ -49,6 +53,25 @@ suites:
       nginx:
         config:
           mainconfig_include: "/etc/nginx/mainconfig_custom_include.conf"
+    provisioner:
+      product_name: chef
+      product_version: 14
+    run_list:
+      - recipe[apt]
+      - recipe[nginx_lwrp::official-repo]
+      - recipe[nginx_lwrp]
+      - recipe[nginx_test::cleaner_check]
+      - recipe[nginx_test]
+      - recipe[nginx_test::helper_templates]
+      - recipe[nginx_test::streams]
+  - name: chef-15
+    attributes:
+      nginx:
+        config:
+          mainconfig_include: "/etc/nginx/mainconfig_custom_include.conf"
+    provisioner:
+      product_name: chef
+      product_version: 15
     run_list:
       - recipe[apt]
       - recipe[nginx_lwrp::official-repo]
