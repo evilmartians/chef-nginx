@@ -1,4 +1,3 @@
-
 control 'nginx configuration tests' do
   title 'Checking nginx custom configuration'
 

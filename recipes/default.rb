@@ -144,15 +144,15 @@ rescue Chef::Exceptions::ResourceNotFound
     group 'root'
     source 'logrotate-nginx.erb'
     variables(
-      logs:          node['nginx']['logrotate']['logs'],
-      how_often:     node['nginx']['logrotate']['how_often'],
-      rotate:        node['nginx']['logrotate']['rotate'],
-      copytruncate:  node['nginx']['logrotate']['copytruncate'],
-      user:          node['nginx']['logrotate']['user'],
-      group:         node['nginx']['logrotate']['group'],
-      mode:          node['nginx']['logrotate']['mode'],
-      pidfile:       node['nginx']['logrotate']['pidfile'],
-      dateext:       node['nginx']['logrotate']['dateext'],
+      logs: node['nginx']['logrotate']['logs'],
+      how_often: node['nginx']['logrotate']['how_often'],
+      rotate: node['nginx']['logrotate']['rotate'],
+      copytruncate: node['nginx']['logrotate']['copytruncate'],
+      user: node['nginx']['logrotate']['user'],
+      group: node['nginx']['logrotate']['group'],
+      mode: node['nginx']['logrotate']['mode'],
+      pidfile: node['nginx']['logrotate']['pidfile'],
+      dateext: node['nginx']['logrotate']['dateext'],
       delaycompress: node['nginx']['logrotate']['delaycompress'],
     )
   end

@@ -1,4 +1,3 @@
-
 control 'basic nginx tests' do
   title 'Check basic nginx installation'
 

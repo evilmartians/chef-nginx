@@ -33,7 +33,7 @@ server {
   index index.html;
   charset utf-8;
 }
-EOF
+  EOF
 end
 
 link '/etc/nginx/sites-enabled/20-hahaha.conf' do
@@ -46,7 +46,7 @@ file '/etc/nginx/streams-enabled/wanked.conf' do
   mode '0644'
   content <<-EOF
 # Your system has been officially WANKed!!!.
-EOF
+  EOF
 end
 # rubocop:enable Layout/IndentHeredoc
 # rubocop:enable Naming/HeredocDelimiterNaming
