@@ -4,6 +4,8 @@
 
 Installs Nginx from package, sets up some default configuration and defines LWRP supposed to be used inside your own cookbooks, which you use to manage your infrastructure.
 
+<img src="https://cdn.evilmartians.com/badges/logo-no-label.svg" alt="Evil Martians logo" width="22" height="16" /> <b>chef-nginx</b> is built by <b><a href="https://evilmartians.com/">Evil Martians</a></b>, an American design and engineering consultancy for <b>developer tools, AI, and cybersecurity startups</b>.
+
 # Requirements
 
 ## Cookbooks
@@ -500,10 +502,6 @@ This definitions is deprecated right now. Use attribute to disable cleanup:
 ```ruby
 node.default['nginx']['enable_cleanup'] = false
 ```
-
-## Sponsor
-
-[![Sponsored by Evil Martians](https://evilmartians.com/badges/sponsored-by-evil-martians@2x.png)](https://evilmartians.com)
 
 # License and Author
 
